@@ -1,4 +1,4 @@
-net: "train_val_lmdb.prototxt"
+net: "/work/04018/wxie/maverick/visual_recognition/finetune/train_val_lmdb.prototxt"
 test_iter: 25
 test_interval: 300
 # lr for fine-tuning should be lower than when starting from scratch
