@@ -2,6 +2,7 @@ import os
 
 def main():
     root_dir = "/home/users/wxie/visual_recognition/data/"
+    root_dir = "/work/04018/wxie/maverick/visual_recognition/data/"
     set_name_list = [ "train", "test", "extra"]
 
     # For each train/test set
