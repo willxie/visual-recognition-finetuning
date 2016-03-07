@@ -14,7 +14,7 @@ layer {
   }
   data_param {
     source: "/work/04018/wxie/maverick/visual_recognition/data/train-lmdb"
-    batch_size: 50
+    batch_size: 128 
     backend: LMDB
   }
 }
@@ -116,7 +116,7 @@ layer {
     }
     bias_filler {
       type: "constant"
-      value: 1
+      value: 0.1
     }
   }
 }
@@ -205,7 +205,7 @@ layer {
     }
     bias_filler {
       type: "constant"
-      value: 1
+      value: 0.1
     }
   }
 }
@@ -239,7 +239,7 @@ layer {
     }
     bias_filler {
       type: "constant"
-      value: 1
+      value: 0.1
     }
   }
 }
@@ -281,7 +281,7 @@ layer {
     }
     bias_filler {
       type: "constant"
-      value: 1
+      value: 0.1
     }
   }
 }
@@ -322,7 +322,7 @@ layer {
     }
     bias_filler {
       type: "constant"
-      value: 1
+      value: 0.1
     }
   }
 }

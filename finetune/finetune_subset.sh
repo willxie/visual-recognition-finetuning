@@ -12,6 +12,8 @@ SOLVER="/work/04018/wxie/maverick/visual_recognition/finetune/solver_lmdb.protot
     # finetune lmdb backend
     #${CAFFE_TOOL}/caffe test -model ${TRAIN_VAL} -weights ${CAFFE_MODEL} -gpu all
     #read -p $'Before finetuning.\nPress [Enter] key to continue.'
+    #time ${CAFFE_TOOL}/caffe train -solver ${SOLVER} -gpu all
     time ${CAFFE_TOOL}/caffe train -solver ${SOLVER} -weights ${CAFFE_MODEL} -gpu all
+
     #read -p $'After finetuning.\nPress [Enter] key to continue.'
     #${CAFFE_TOOL}/caffe test -model train_val_lmdb.prototxt -weights finetune_flickr_style_lmdb_iter_1000.caffemodel -gpu all
