@@ -6,12 +6,12 @@ base_lr: 0.000001
 lr_policy: "step"
 gamma: 0.1
 # stepsize should also be lower, as we're closer to being done
-stepsize: 1000
+stepsize: 10000
 display: 50
 max_iter: 100000
 momentum: 0.9
 weight_decay: 0.0005
-snapshot: 300
+snapshot: 500
 snapshot_prefix: "/work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb"
 # uncomment the following to default to CPU mode solving
 # solver_mode: CPU
