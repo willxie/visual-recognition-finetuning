@@ -1,0 +1,1724 @@
+I0306 16:51:15.707837 20805 caffe.cpp:185] Using GPUs 0
+I0306 16:51:15.708451 20805 caffe.cpp:190] GPU 0: Tesla K40m
+I0306 16:51:16.600083 20805 solver.cpp:48] Initializing solver from parameters: 
+test_iter: 25
+test_interval: 300
+base_lr: 1e-05
+display: 50
+max_iter: 100000
+lr_policy: "step"
+gamma: 0.1
+momentum: 0.9
+weight_decay: 0.0005
+stepsize: 5000
+snapshot: 300
+snapshot_prefix: "/work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb"
+device_id: 0
+net: "/work/04018/wxie/maverick/visual_recognition/finetune/train_val_lmdb.prototxt"
+I0306 16:51:16.603199 20805 solver.cpp:91] Creating training net from net file: /work/04018/wxie/maverick/visual_recognition/finetune/train_val_lmdb.prototxt
+I0306 16:51:16.606889 20805 net.cpp:322] The NetState phase (0) differed from the phase (1) specified by a rule in layer data
+I0306 16:51:16.606956 20805 net.cpp:322] The NetState phase (0) differed from the phase (1) specified by a rule in layer accuracy
+I0306 16:51:16.607162 20805 net.cpp:49] Initializing net from parameters: 
+name: "FlickrStyleCaffeNet"
+state {
+  phase: TRAIN
+}
+layer {
+  name: "data"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    mirror: true
+    crop_size: 227
+    mean_file: "/work/01932/dineshj/CS381V/caffe_install_scripts/caffe/data/ilsvrc12/imagenet_mean.binaryproto"
+  }
+  data_param {
+    source: "/work/04018/wxie/maverick/visual_recognition/data/train-lmdb"
+    batch_size: 128
+    backend: LMDB
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    kernel_size: 11
+    stride: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "pool1"
+  top: "norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "norm1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 2
+    kernel_size: 5
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "norm2"
+  type: "LRN"
+  bottom: "pool2"
+  top: "norm2"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "norm2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "conv3"
+  top: "conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv4"
+  top: "conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "conv5"
+  top: "conv5"
+}
+layer {
+  name: "pool5"
+  type: "Pooling"
+  bottom: "conv5"
+  top: "pool5"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "fc6"
+  type: "InnerProduct"
+  bottom: "pool5"
+  top: "fc6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu6"
+  type: "ReLU"
+  bottom: "fc6"
+  top: "fc6"
+}
+layer {
+  name: "drop6"
+  type: "Dropout"
+  bottom: "fc6"
+  top: "fc6"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc7"
+  type: "InnerProduct"
+  bottom: "fc6"
+  top: "fc7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu7"
+  type: "ReLU"
+  bottom: "fc7"
+  top: "fc7"
+}
+layer {
+  name: "drop7"
+  type: "Dropout"
+  bottom: "fc7"
+  top: "fc7"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc8_subset"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "fc8_subset"
+  param {
+    lr_mult: 10
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 20
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 25
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "fc8_subset"
+  bottom: "label"
+  top: "loss"
+}
+I0306 16:51:16.607439 20805 layer_factory.hpp:77] Creating layer data
+I0306 16:51:16.608271 20805 net.cpp:106] Creating Layer data
+I0306 16:51:16.608331 20805 net.cpp:411] data -> data
+I0306 16:51:16.608445 20805 net.cpp:411] data -> label
+I0306 16:51:16.608536 20805 data_transformer.cpp:25] Loading mean file from: /work/01932/dineshj/CS381V/caffe_install_scripts/caffe/data/ilsvrc12/imagenet_mean.binaryproto
+I0306 16:51:16.625815 20807 db_lmdb.cpp:38] Opened lmdb /work/04018/wxie/maverick/visual_recognition/data/train-lmdb
+I0306 16:51:16.668476 20805 data_layer.cpp:41] output data size: 128,3,227,227
+I0306 16:51:16.822657 20805 net.cpp:150] Setting up data
+I0306 16:51:16.822756 20805 net.cpp:157] Top shape: 128 3 227 227 (19787136)
+I0306 16:51:16.822790 20805 net.cpp:157] Top shape: 128 (128)
+I0306 16:51:16.822819 20805 net.cpp:165] Memory required for data: 79149056
+I0306 16:51:16.822860 20805 layer_factory.hpp:77] Creating layer conv1
+I0306 16:51:16.822932 20805 net.cpp:106] Creating Layer conv1
+I0306 16:51:16.822973 20805 net.cpp:454] conv1 <- data
+I0306 16:51:16.823014 20805 net.cpp:411] conv1 -> conv1
+I0306 16:51:16.833088 20805 net.cpp:150] Setting up conv1
+I0306 16:51:16.833132 20805 net.cpp:157] Top shape: 128 96 55 55 (37171200)
+I0306 16:51:16.833158 20805 net.cpp:165] Memory required for data: 227833856
+I0306 16:51:16.833211 20805 layer_factory.hpp:77] Creating layer relu1
+I0306 16:51:16.833250 20805 net.cpp:106] Creating Layer relu1
+I0306 16:51:16.833281 20805 net.cpp:454] relu1 <- conv1
+I0306 16:51:16.833312 20805 net.cpp:397] relu1 -> conv1 (in-place)
+I0306 16:51:16.833346 20805 net.cpp:150] Setting up relu1
+I0306 16:51:16.833377 20805 net.cpp:157] Top shape: 128 96 55 55 (37171200)
+I0306 16:51:16.833405 20805 net.cpp:165] Memory required for data: 376518656
+I0306 16:51:16.833432 20805 layer_factory.hpp:77] Creating layer pool1
+I0306 16:51:16.833462 20805 net.cpp:106] Creating Layer pool1
+I0306 16:51:16.833499 20805 net.cpp:454] pool1 <- conv1
+I0306 16:51:16.833530 20805 net.cpp:411] pool1 -> pool1
+I0306 16:51:16.833688 20805 net.cpp:150] Setting up pool1
+I0306 16:51:16.833726 20805 net.cpp:157] Top shape: 128 96 27 27 (8957952)
+I0306 16:51:16.833808 20805 net.cpp:165] Memory required for data: 412350464
+I0306 16:51:16.833838 20805 layer_factory.hpp:77] Creating layer norm1
+I0306 16:51:16.833871 20805 net.cpp:106] Creating Layer norm1
+I0306 16:51:16.833899 20805 net.cpp:454] norm1 <- pool1
+I0306 16:51:16.833933 20805 net.cpp:411] norm1 -> norm1
+I0306 16:51:16.834043 20805 net.cpp:150] Setting up norm1
+I0306 16:51:16.834074 20805 net.cpp:157] Top shape: 128 96 27 27 (8957952)
+I0306 16:51:16.834097 20805 net.cpp:165] Memory required for data: 448182272
+I0306 16:51:16.834121 20805 layer_factory.hpp:77] Creating layer conv2
+I0306 16:51:16.834159 20805 net.cpp:106] Creating Layer conv2
+I0306 16:51:16.834188 20805 net.cpp:454] conv2 <- norm1
+I0306 16:51:16.834218 20805 net.cpp:411] conv2 -> conv2
+I0306 16:51:16.846850 20805 net.cpp:150] Setting up conv2
+I0306 16:51:16.846926 20805 net.cpp:157] Top shape: 128 256 27 27 (23887872)
+I0306 16:51:16.846956 20805 net.cpp:165] Memory required for data: 543733760
+I0306 16:51:16.846992 20805 layer_factory.hpp:77] Creating layer relu2
+I0306 16:51:16.847025 20805 net.cpp:106] Creating Layer relu2
+I0306 16:51:16.847054 20805 net.cpp:454] relu2 <- conv2
+I0306 16:51:16.847087 20805 net.cpp:397] relu2 -> conv2 (in-place)
+I0306 16:51:16.847122 20805 net.cpp:150] Setting up relu2
+I0306 16:51:16.847154 20805 net.cpp:157] Top shape: 128 256 27 27 (23887872)
+I0306 16:51:16.847180 20805 net.cpp:165] Memory required for data: 639285248
+I0306 16:51:16.847208 20805 layer_factory.hpp:77] Creating layer pool2
+I0306 16:51:16.847237 20805 net.cpp:106] Creating Layer pool2
+I0306 16:51:16.847264 20805 net.cpp:454] pool2 <- conv2
+I0306 16:51:16.847296 20805 net.cpp:411] pool2 -> pool2
+I0306 16:51:16.847358 20805 net.cpp:150] Setting up pool2
+I0306 16:51:16.847394 20805 net.cpp:157] Top shape: 128 256 13 13 (5537792)
+I0306 16:51:16.847422 20805 net.cpp:165] Memory required for data: 661436416
+I0306 16:51:16.847448 20805 layer_factory.hpp:77] Creating layer norm2
+I0306 16:51:16.847486 20805 net.cpp:106] Creating Layer norm2
+I0306 16:51:16.847518 20805 net.cpp:454] norm2 <- pool2
+I0306 16:51:16.847551 20805 net.cpp:411] norm2 -> norm2
+I0306 16:51:16.847612 20805 net.cpp:150] Setting up norm2
+I0306 16:51:16.847645 20805 net.cpp:157] Top shape: 128 256 13 13 (5537792)
+I0306 16:51:16.847666 20805 net.cpp:165] Memory required for data: 683587584
+I0306 16:51:16.847689 20805 layer_factory.hpp:77] Creating layer conv3
+I0306 16:51:16.847725 20805 net.cpp:106] Creating Layer conv3
+I0306 16:51:16.847755 20805 net.cpp:454] conv3 <- norm2
+I0306 16:51:16.847786 20805 net.cpp:411] conv3 -> conv3
+I0306 16:51:16.882561 20805 net.cpp:150] Setting up conv3
+I0306 16:51:16.882668 20805 net.cpp:157] Top shape: 128 384 13 13 (8306688)
+I0306 16:51:16.882696 20805 net.cpp:165] Memory required for data: 716814336
+I0306 16:51:16.882735 20805 layer_factory.hpp:77] Creating layer relu3
+I0306 16:51:16.882766 20805 net.cpp:106] Creating Layer relu3
+I0306 16:51:16.882791 20805 net.cpp:454] relu3 <- conv3
+I0306 16:51:16.882822 20805 net.cpp:397] relu3 -> conv3 (in-place)
+I0306 16:51:16.882858 20805 net.cpp:150] Setting up relu3
+I0306 16:51:16.882889 20805 net.cpp:157] Top shape: 128 384 13 13 (8306688)
+I0306 16:51:16.882916 20805 net.cpp:165] Memory required for data: 750041088
+I0306 16:51:16.882943 20805 layer_factory.hpp:77] Creating layer conv4
+I0306 16:51:16.883003 20805 net.cpp:106] Creating Layer conv4
+I0306 16:51:16.883035 20805 net.cpp:454] conv4 <- conv3
+I0306 16:51:16.883070 20805 net.cpp:411] conv4 -> conv4
+I0306 16:51:16.915607 20805 net.cpp:150] Setting up conv4
+I0306 16:51:16.915701 20805 net.cpp:157] Top shape: 128 384 13 13 (8306688)
+I0306 16:51:16.915732 20805 net.cpp:165] Memory required for data: 783267840
+I0306 16:51:16.915767 20805 layer_factory.hpp:77] Creating layer relu4
+I0306 16:51:16.915802 20805 net.cpp:106] Creating Layer relu4
+I0306 16:51:16.915829 20805 net.cpp:454] relu4 <- conv4
+I0306 16:51:16.915861 20805 net.cpp:397] relu4 -> conv4 (in-place)
+I0306 16:51:16.915896 20805 net.cpp:150] Setting up relu4
+I0306 16:51:16.915954 20805 net.cpp:157] Top shape: 128 384 13 13 (8306688)
+I0306 16:51:16.916014 20805 net.cpp:165] Memory required for data: 816494592
+I0306 16:51:16.916043 20805 layer_factory.hpp:77] Creating layer conv5
+I0306 16:51:16.916082 20805 net.cpp:106] Creating Layer conv5
+I0306 16:51:16.916112 20805 net.cpp:454] conv5 <- conv4
+I0306 16:51:16.916146 20805 net.cpp:411] conv5 -> conv5
+I0306 16:51:16.933851 20805 net.cpp:150] Setting up conv5
+I0306 16:51:16.933935 20805 net.cpp:157] Top shape: 128 256 13 13 (5537792)
+I0306 16:51:16.933964 20805 net.cpp:165] Memory required for data: 838645760
+I0306 16:51:16.934002 20805 layer_factory.hpp:77] Creating layer relu5
+I0306 16:51:16.934038 20805 net.cpp:106] Creating Layer relu5
+I0306 16:51:16.934068 20805 net.cpp:454] relu5 <- conv5
+I0306 16:51:16.934097 20805 net.cpp:397] relu5 -> conv5 (in-place)
+I0306 16:51:16.934126 20805 net.cpp:150] Setting up relu5
+I0306 16:51:16.934152 20805 net.cpp:157] Top shape: 128 256 13 13 (5537792)
+I0306 16:51:16.934177 20805 net.cpp:165] Memory required for data: 860796928
+I0306 16:51:16.934203 20805 layer_factory.hpp:77] Creating layer pool5
+I0306 16:51:16.934236 20805 net.cpp:106] Creating Layer pool5
+I0306 16:51:16.934264 20805 net.cpp:454] pool5 <- conv5
+I0306 16:51:16.934293 20805 net.cpp:411] pool5 -> pool5
+I0306 16:51:16.934363 20805 net.cpp:150] Setting up pool5
+I0306 16:51:16.934399 20805 net.cpp:157] Top shape: 128 256 6 6 (1179648)
+I0306 16:51:16.934425 20805 net.cpp:165] Memory required for data: 865515520
+I0306 16:51:16.934453 20805 layer_factory.hpp:77] Creating layer fc6
+I0306 16:51:16.934528 20805 net.cpp:106] Creating Layer fc6
+I0306 16:51:16.934559 20805 net.cpp:454] fc6 <- pool5
+I0306 16:51:16.934592 20805 net.cpp:411] fc6 -> fc6
+I0306 16:51:16.988543 20808 blocking_queue.cpp:50] Waiting for data
+I0306 16:51:18.363459 20805 net.cpp:150] Setting up fc6
+I0306 16:51:18.363592 20805 net.cpp:157] Top shape: 128 4096 (524288)
+I0306 16:51:18.363618 20805 net.cpp:165] Memory required for data: 867612672
+I0306 16:51:18.363648 20805 layer_factory.hpp:77] Creating layer relu6
+I0306 16:51:18.363677 20805 net.cpp:106] Creating Layer relu6
+I0306 16:51:18.363701 20805 net.cpp:454] relu6 <- fc6
+I0306 16:51:18.363728 20805 net.cpp:397] relu6 -> fc6 (in-place)
+I0306 16:51:18.363759 20805 net.cpp:150] Setting up relu6
+I0306 16:51:18.363785 20805 net.cpp:157] Top shape: 128 4096 (524288)
+I0306 16:51:18.363806 20805 net.cpp:165] Memory required for data: 869709824
+I0306 16:51:18.363828 20805 layer_factory.hpp:77] Creating layer drop6
+I0306 16:51:18.363857 20805 net.cpp:106] Creating Layer drop6
+I0306 16:51:18.363881 20805 net.cpp:454] drop6 <- fc6
+I0306 16:51:18.363905 20805 net.cpp:397] drop6 -> fc6 (in-place)
+I0306 16:51:18.363986 20805 net.cpp:150] Setting up drop6
+I0306 16:51:18.364019 20805 net.cpp:157] Top shape: 128 4096 (524288)
+I0306 16:51:18.364042 20805 net.cpp:165] Memory required for data: 871806976
+I0306 16:51:18.364064 20805 layer_factory.hpp:77] Creating layer fc7
+I0306 16:51:18.364091 20805 net.cpp:106] Creating Layer fc7
+I0306 16:51:18.364115 20805 net.cpp:454] fc7 <- fc6
+I0306 16:51:18.364142 20805 net.cpp:411] fc7 -> fc7
+I0306 16:51:18.978433 20805 net.cpp:150] Setting up fc7
+I0306 16:51:18.978576 20805 net.cpp:157] Top shape: 128 4096 (524288)
+I0306 16:51:18.978600 20805 net.cpp:165] Memory required for data: 873904128
+I0306 16:51:18.978631 20805 layer_factory.hpp:77] Creating layer relu7
+I0306 16:51:18.978667 20805 net.cpp:106] Creating Layer relu7
+I0306 16:51:18.978693 20805 net.cpp:454] relu7 <- fc7
+I0306 16:51:18.978719 20805 net.cpp:397] relu7 -> fc7 (in-place)
+I0306 16:51:18.978751 20805 net.cpp:150] Setting up relu7
+I0306 16:51:18.978776 20805 net.cpp:157] Top shape: 128 4096 (524288)
+I0306 16:51:18.978798 20805 net.cpp:165] Memory required for data: 876001280
+I0306 16:51:18.978821 20805 layer_factory.hpp:77] Creating layer drop7
+I0306 16:51:18.978845 20805 net.cpp:106] Creating Layer drop7
+I0306 16:51:18.978868 20805 net.cpp:454] drop7 <- fc7
+I0306 16:51:18.978893 20805 net.cpp:397] drop7 -> fc7 (in-place)
+I0306 16:51:18.978967 20805 net.cpp:150] Setting up drop7
+I0306 16:51:18.979030 20805 net.cpp:157] Top shape: 128 4096 (524288)
+I0306 16:51:18.979053 20805 net.cpp:165] Memory required for data: 878098432
+I0306 16:51:18.979074 20805 layer_factory.hpp:77] Creating layer fc8_subset
+I0306 16:51:18.979104 20805 net.cpp:106] Creating Layer fc8_subset
+I0306 16:51:18.979128 20805 net.cpp:454] fc8_subset <- fc7
+I0306 16:51:18.979156 20805 net.cpp:411] fc8_subset -> fc8_subset
+I0306 16:51:18.983418 20805 net.cpp:150] Setting up fc8_subset
+I0306 16:51:18.983455 20805 net.cpp:157] Top shape: 128 25 (3200)
+I0306 16:51:18.983482 20805 net.cpp:165] Memory required for data: 878111232
+I0306 16:51:18.983508 20805 layer_factory.hpp:77] Creating layer loss
+I0306 16:51:18.983536 20805 net.cpp:106] Creating Layer loss
+I0306 16:51:18.983558 20805 net.cpp:454] loss <- fc8_subset
+I0306 16:51:18.983582 20805 net.cpp:454] loss <- label
+I0306 16:51:18.983611 20805 net.cpp:411] loss -> loss
+I0306 16:51:18.983675 20805 layer_factory.hpp:77] Creating layer loss
+I0306 16:51:18.983799 20805 net.cpp:150] Setting up loss
+I0306 16:51:18.983830 20805 net.cpp:157] Top shape: (1)
+I0306 16:51:18.983851 20805 net.cpp:160]     with loss weight 1
+I0306 16:51:18.983906 20805 net.cpp:165] Memory required for data: 878111236
+I0306 16:51:18.983928 20805 net.cpp:226] loss needs backward computation.
+I0306 16:51:18.983952 20805 net.cpp:226] fc8_subset needs backward computation.
+I0306 16:51:18.983973 20805 net.cpp:226] drop7 needs backward computation.
+I0306 16:51:18.983994 20805 net.cpp:226] relu7 needs backward computation.
+I0306 16:51:18.984015 20805 net.cpp:226] fc7 needs backward computation.
+I0306 16:51:18.984036 20805 net.cpp:226] drop6 needs backward computation.
+I0306 16:51:18.984058 20805 net.cpp:226] relu6 needs backward computation.
+I0306 16:51:18.984079 20805 net.cpp:226] fc6 needs backward computation.
+I0306 16:51:18.984100 20805 net.cpp:226] pool5 needs backward computation.
+I0306 16:51:18.984122 20805 net.cpp:226] relu5 needs backward computation.
+I0306 16:51:18.984143 20805 net.cpp:226] conv5 needs backward computation.
+I0306 16:51:18.984165 20805 net.cpp:226] relu4 needs backward computation.
+I0306 16:51:18.984187 20805 net.cpp:226] conv4 needs backward computation.
+I0306 16:51:18.984208 20805 net.cpp:226] relu3 needs backward computation.
+I0306 16:51:18.984230 20805 net.cpp:226] conv3 needs backward computation.
+I0306 16:51:18.984254 20805 net.cpp:226] norm2 needs backward computation.
+I0306 16:51:18.984278 20805 net.cpp:226] pool2 needs backward computation.
+I0306 16:51:18.984300 20805 net.cpp:226] relu2 needs backward computation.
+I0306 16:51:18.984323 20805 net.cpp:226] conv2 needs backward computation.
+I0306 16:51:18.984344 20805 net.cpp:226] norm1 needs backward computation.
+I0306 16:51:18.984364 20805 net.cpp:226] pool1 needs backward computation.
+I0306 16:51:18.984386 20805 net.cpp:226] relu1 needs backward computation.
+I0306 16:51:18.984407 20805 net.cpp:226] conv1 needs backward computation.
+I0306 16:51:18.984429 20805 net.cpp:228] data does not need backward computation.
+I0306 16:51:18.984452 20805 net.cpp:270] This network produces output loss
+I0306 16:51:18.984493 20805 net.cpp:283] Network initialization done.
+I0306 16:51:18.986385 20805 solver.cpp:181] Creating test net (#0) specified by net file: /work/04018/wxie/maverick/visual_recognition/finetune/train_val_lmdb.prototxt
+I0306 16:51:18.986460 20805 net.cpp:322] The NetState phase (1) differed from the phase (0) specified by a rule in layer data
+I0306 16:51:18.986687 20805 net.cpp:49] Initializing net from parameters: 
+name: "FlickrStyleCaffeNet"
+state {
+  phase: TEST
+}
+layer {
+  name: "data"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    mirror: false
+    crop_size: 227
+    mean_file: "/work/01932/dineshj/CS381V/caffe_install_scripts/caffe/data/ilsvrc12/imagenet_mean.binaryproto"
+  }
+  data_param {
+    source: "/work/04018/wxie/maverick/visual_recognition/data/test-lmdb"
+    batch_size: 20
+    backend: LMDB
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    kernel_size: 11
+    stride: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "pool1"
+  top: "norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "norm1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 2
+    kernel_size: 5
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "norm2"
+  type: "LRN"
+  bottom: "pool2"
+  top: "norm2"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "norm2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "conv3"
+  top: "conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv4"
+  top: "conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "conv5"
+  top: "conv5"
+}
+layer {
+  name: "pool5"
+  type: "Pooling"
+  bottom: "conv5"
+  top: "pool5"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "fc6"
+  type: "InnerProduct"
+  bottom: "pool5"
+  top: "fc6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu6"
+  type: "ReLU"
+  bottom: "fc6"
+  top: "fc6"
+}
+layer {
+  name: "drop6"
+  type: "Dropout"
+  bottom: "fc6"
+  top: "fc6"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc7"
+  type: "InnerProduct"
+  bottom: "fc6"
+  top: "fc7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu7"
+  type: "ReLU"
+  bottom: "fc7"
+  top: "fc7"
+}
+layer {
+  name: "drop7"
+  type: "Dropout"
+  bottom: "fc7"
+  top: "fc7"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc8_subset"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "fc8_subset"
+  param {
+    lr_mult: 10
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 20
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 25
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "fc8_subset"
+  bottom: "label"
+  top: "loss"
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "fc8_subset"
+  bottom: "label"
+  top: "accuracy"
+  include {
+    phase: TEST
+  }
+}
+I0306 16:51:18.986856 20805 layer_factory.hpp:77] Creating layer data
+I0306 16:51:18.987004 20805 net.cpp:106] Creating Layer data
+I0306 16:51:18.987056 20805 net.cpp:411] data -> data
+I0306 16:51:18.987092 20805 net.cpp:411] data -> label
+I0306 16:51:18.987123 20805 data_transformer.cpp:25] Loading mean file from: /work/01932/dineshj/CS381V/caffe_install_scripts/caffe/data/ilsvrc12/imagenet_mean.binaryproto
+I0306 16:51:19.001765 20809 db_lmdb.cpp:38] Opened lmdb /work/04018/wxie/maverick/visual_recognition/data/test-lmdb
+I0306 16:51:19.003677 20805 data_layer.cpp:41] output data size: 20,3,227,227
+I0306 16:51:19.027210 20805 net.cpp:150] Setting up data
+I0306 16:51:19.027298 20805 net.cpp:157] Top shape: 20 3 227 227 (3091740)
+I0306 16:51:19.027338 20805 net.cpp:157] Top shape: 20 (20)
+I0306 16:51:19.027369 20805 net.cpp:165] Memory required for data: 12367040
+I0306 16:51:19.027398 20805 layer_factory.hpp:77] Creating layer label_data_1_split
+I0306 16:51:19.027431 20805 net.cpp:106] Creating Layer label_data_1_split
+I0306 16:51:19.027464 20805 net.cpp:454] label_data_1_split <- label
+I0306 16:51:19.027497 20805 net.cpp:411] label_data_1_split -> label_data_1_split_0
+I0306 16:51:19.027532 20805 net.cpp:411] label_data_1_split -> label_data_1_split_1
+I0306 16:51:19.027616 20805 net.cpp:150] Setting up label_data_1_split
+I0306 16:51:19.027673 20805 net.cpp:157] Top shape: 20 (20)
+I0306 16:51:19.027703 20805 net.cpp:157] Top shape: 20 (20)
+I0306 16:51:19.027729 20805 net.cpp:165] Memory required for data: 12367200
+I0306 16:51:19.027755 20805 layer_factory.hpp:77] Creating layer conv1
+I0306 16:51:19.027788 20805 net.cpp:106] Creating Layer conv1
+I0306 16:51:19.027817 20805 net.cpp:454] conv1 <- data
+I0306 16:51:19.027848 20805 net.cpp:411] conv1 -> conv1
+I0306 16:51:19.029424 20805 net.cpp:150] Setting up conv1
+I0306 16:51:19.029474 20805 net.cpp:157] Top shape: 20 96 55 55 (5808000)
+I0306 16:51:19.029502 20805 net.cpp:165] Memory required for data: 35599200
+I0306 16:51:19.029536 20805 layer_factory.hpp:77] Creating layer relu1
+I0306 16:51:19.029567 20805 net.cpp:106] Creating Layer relu1
+I0306 16:51:19.029594 20805 net.cpp:454] relu1 <- conv1
+I0306 16:51:19.029623 20805 net.cpp:397] relu1 -> conv1 (in-place)
+I0306 16:51:19.029656 20805 net.cpp:150] Setting up relu1
+I0306 16:51:19.029686 20805 net.cpp:157] Top shape: 20 96 55 55 (5808000)
+I0306 16:51:19.029713 20805 net.cpp:165] Memory required for data: 58831200
+I0306 16:51:19.029739 20805 layer_factory.hpp:77] Creating layer pool1
+I0306 16:51:19.029770 20805 net.cpp:106] Creating Layer pool1
+I0306 16:51:19.029798 20805 net.cpp:454] pool1 <- conv1
+I0306 16:51:19.029829 20805 net.cpp:411] pool1 -> pool1
+I0306 16:51:19.029883 20805 net.cpp:150] Setting up pool1
+I0306 16:51:19.029917 20805 net.cpp:157] Top shape: 20 96 27 27 (1399680)
+I0306 16:51:19.029942 20805 net.cpp:165] Memory required for data: 64429920
+I0306 16:51:19.029970 20805 layer_factory.hpp:77] Creating layer norm1
+I0306 16:51:19.030002 20805 net.cpp:106] Creating Layer norm1
+I0306 16:51:19.030030 20805 net.cpp:454] norm1 <- pool1
+I0306 16:51:19.030058 20805 net.cpp:411] norm1 -> norm1
+I0306 16:51:19.030112 20805 net.cpp:150] Setting up norm1
+I0306 16:51:19.030148 20805 net.cpp:157] Top shape: 20 96 27 27 (1399680)
+I0306 16:51:19.030175 20805 net.cpp:165] Memory required for data: 70028640
+I0306 16:51:19.030202 20805 layer_factory.hpp:77] Creating layer conv2
+I0306 16:51:19.030235 20805 net.cpp:106] Creating Layer conv2
+I0306 16:51:19.030282 20805 net.cpp:454] conv2 <- norm1
+I0306 16:51:19.030339 20805 net.cpp:411] conv2 -> conv2
+I0306 16:51:19.043094 20805 net.cpp:150] Setting up conv2
+I0306 16:51:19.043149 20805 net.cpp:157] Top shape: 20 256 27 27 (3732480)
+I0306 16:51:19.043175 20805 net.cpp:165] Memory required for data: 84958560
+I0306 16:51:19.043205 20805 layer_factory.hpp:77] Creating layer relu2
+I0306 16:51:19.043246 20805 net.cpp:106] Creating Layer relu2
+I0306 16:51:19.043269 20805 net.cpp:454] relu2 <- conv2
+I0306 16:51:19.043304 20805 net.cpp:397] relu2 -> conv2 (in-place)
+I0306 16:51:19.043347 20805 net.cpp:150] Setting up relu2
+I0306 16:51:19.043375 20805 net.cpp:157] Top shape: 20 256 27 27 (3732480)
+I0306 16:51:19.043411 20805 net.cpp:165] Memory required for data: 99888480
+I0306 16:51:19.043436 20805 layer_factory.hpp:77] Creating layer pool2
+I0306 16:51:19.043490 20805 net.cpp:106] Creating Layer pool2
+I0306 16:51:19.043519 20805 net.cpp:454] pool2 <- conv2
+I0306 16:51:19.043563 20805 net.cpp:411] pool2 -> pool2
+I0306 16:51:19.043638 20805 net.cpp:150] Setting up pool2
+I0306 16:51:19.043678 20805 net.cpp:157] Top shape: 20 256 13 13 (865280)
+I0306 16:51:19.043704 20805 net.cpp:165] Memory required for data: 103349600
+I0306 16:51:19.043740 20805 layer_factory.hpp:77] Creating layer norm2
+I0306 16:51:19.043784 20805 net.cpp:106] Creating Layer norm2
+I0306 16:51:19.043826 20805 net.cpp:454] norm2 <- pool2
+I0306 16:51:19.043861 20805 net.cpp:411] norm2 -> norm2
+I0306 16:51:19.043936 20805 net.cpp:150] Setting up norm2
+I0306 16:51:19.043984 20805 net.cpp:157] Top shape: 20 256 13 13 (865280)
+I0306 16:51:19.044011 20805 net.cpp:165] Memory required for data: 106810720
+I0306 16:51:19.044039 20805 layer_factory.hpp:77] Creating layer conv3
+I0306 16:51:19.044075 20805 net.cpp:106] Creating Layer conv3
+I0306 16:51:19.044106 20805 net.cpp:454] conv3 <- norm2
+I0306 16:51:19.044149 20805 net.cpp:411] conv3 -> conv3
+I0306 16:51:19.079232 20805 net.cpp:150] Setting up conv3
+I0306 16:51:19.079329 20805 net.cpp:157] Top shape: 20 384 13 13 (1297920)
+I0306 16:51:19.079370 20805 net.cpp:165] Memory required for data: 112002400
+I0306 16:51:19.079406 20805 layer_factory.hpp:77] Creating layer relu3
+I0306 16:51:19.079434 20805 net.cpp:106] Creating Layer relu3
+I0306 16:51:19.079458 20805 net.cpp:454] relu3 <- conv3
+I0306 16:51:19.079493 20805 net.cpp:397] relu3 -> conv3 (in-place)
+I0306 16:51:19.079527 20805 net.cpp:150] Setting up relu3
+I0306 16:51:19.079558 20805 net.cpp:157] Top shape: 20 384 13 13 (1297920)
+I0306 16:51:19.079586 20805 net.cpp:165] Memory required for data: 117194080
+I0306 16:51:19.079612 20805 layer_factory.hpp:77] Creating layer conv4
+I0306 16:51:19.079650 20805 net.cpp:106] Creating Layer conv4
+I0306 16:51:19.079680 20805 net.cpp:454] conv4 <- conv3
+I0306 16:51:19.079715 20805 net.cpp:411] conv4 -> conv4
+I0306 16:51:19.106204 20805 net.cpp:150] Setting up conv4
+I0306 16:51:19.106256 20805 net.cpp:157] Top shape: 20 384 13 13 (1297920)
+I0306 16:51:19.106284 20805 net.cpp:165] Memory required for data: 122385760
+I0306 16:51:19.106312 20805 layer_factory.hpp:77] Creating layer relu4
+I0306 16:51:19.106340 20805 net.cpp:106] Creating Layer relu4
+I0306 16:51:19.106369 20805 net.cpp:454] relu4 <- conv4
+I0306 16:51:19.106400 20805 net.cpp:397] relu4 -> conv4 (in-place)
+I0306 16:51:19.106433 20805 net.cpp:150] Setting up relu4
+I0306 16:51:19.106467 20805 net.cpp:157] Top shape: 20 384 13 13 (1297920)
+I0306 16:51:19.106494 20805 net.cpp:165] Memory required for data: 127577440
+I0306 16:51:19.106520 20805 layer_factory.hpp:77] Creating layer conv5
+I0306 16:51:19.106552 20805 net.cpp:106] Creating Layer conv5
+I0306 16:51:19.106581 20805 net.cpp:454] conv5 <- conv4
+I0306 16:51:19.106612 20805 net.cpp:411] conv5 -> conv5
+I0306 16:51:19.124555 20805 net.cpp:150] Setting up conv5
+I0306 16:51:19.124624 20805 net.cpp:157] Top shape: 20 256 13 13 (865280)
+I0306 16:51:19.124663 20805 net.cpp:165] Memory required for data: 131038560
+I0306 16:51:19.124703 20805 layer_factory.hpp:77] Creating layer relu5
+I0306 16:51:19.124738 20805 net.cpp:106] Creating Layer relu5
+I0306 16:51:19.124793 20805 net.cpp:454] relu5 <- conv5
+I0306 16:51:19.124871 20805 net.cpp:397] relu5 -> conv5 (in-place)
+I0306 16:51:19.124917 20805 net.cpp:150] Setting up relu5
+I0306 16:51:19.124959 20805 net.cpp:157] Top shape: 20 256 13 13 (865280)
+I0306 16:51:19.124984 20805 net.cpp:165] Memory required for data: 134499680
+I0306 16:51:19.125010 20805 layer_factory.hpp:77] Creating layer pool5
+I0306 16:51:19.125052 20805 net.cpp:106] Creating Layer pool5
+I0306 16:51:19.125082 20805 net.cpp:454] pool5 <- conv5
+I0306 16:51:19.125113 20805 net.cpp:411] pool5 -> pool5
+I0306 16:51:19.125175 20805 net.cpp:150] Setting up pool5
+I0306 16:51:19.125211 20805 net.cpp:157] Top shape: 20 256 6 6 (184320)
+I0306 16:51:19.125236 20805 net.cpp:165] Memory required for data: 135236960
+I0306 16:51:19.125263 20805 layer_factory.hpp:77] Creating layer fc6
+I0306 16:51:19.125294 20805 net.cpp:106] Creating Layer fc6
+I0306 16:51:19.125322 20805 net.cpp:454] fc6 <- pool5
+I0306 16:51:19.125354 20805 net.cpp:411] fc6 -> fc6
+I0306 16:51:20.506132 20805 net.cpp:150] Setting up fc6
+I0306 16:51:20.506271 20805 net.cpp:157] Top shape: 20 4096 (81920)
+I0306 16:51:20.506296 20805 net.cpp:165] Memory required for data: 135564640
+I0306 16:51:20.506327 20805 layer_factory.hpp:77] Creating layer relu6
+I0306 16:51:20.506357 20805 net.cpp:106] Creating Layer relu6
+I0306 16:51:20.506381 20805 net.cpp:454] relu6 <- fc6
+I0306 16:51:20.506408 20805 net.cpp:397] relu6 -> fc6 (in-place)
+I0306 16:51:20.506440 20805 net.cpp:150] Setting up relu6
+I0306 16:51:20.506469 20805 net.cpp:157] Top shape: 20 4096 (81920)
+I0306 16:51:20.506492 20805 net.cpp:165] Memory required for data: 135892320
+I0306 16:51:20.506515 20805 layer_factory.hpp:77] Creating layer drop6
+I0306 16:51:20.506541 20805 net.cpp:106] Creating Layer drop6
+I0306 16:51:20.506563 20805 net.cpp:454] drop6 <- fc6
+I0306 16:51:20.506589 20805 net.cpp:397] drop6 -> fc6 (in-place)
+I0306 16:51:20.506639 20805 net.cpp:150] Setting up drop6
+I0306 16:51:20.506669 20805 net.cpp:157] Top shape: 20 4096 (81920)
+I0306 16:51:20.506690 20805 net.cpp:165] Memory required for data: 136220000
+I0306 16:51:20.506711 20805 layer_factory.hpp:77] Creating layer fc7
+I0306 16:51:20.506739 20805 net.cpp:106] Creating Layer fc7
+I0306 16:51:20.506762 20805 net.cpp:454] fc7 <- fc6
+I0306 16:51:20.506789 20805 net.cpp:411] fc7 -> fc7
+I0306 16:51:21.120198 20805 net.cpp:150] Setting up fc7
+I0306 16:51:21.120335 20805 net.cpp:157] Top shape: 20 4096 (81920)
+I0306 16:51:21.120360 20805 net.cpp:165] Memory required for data: 136547680
+I0306 16:51:21.120389 20805 layer_factory.hpp:77] Creating layer relu7
+I0306 16:51:21.120419 20805 net.cpp:106] Creating Layer relu7
+I0306 16:51:21.120442 20805 net.cpp:454] relu7 <- fc7
+I0306 16:51:21.120473 20805 net.cpp:397] relu7 -> fc7 (in-place)
+I0306 16:51:21.120507 20805 net.cpp:150] Setting up relu7
+I0306 16:51:21.120532 20805 net.cpp:157] Top shape: 20 4096 (81920)
+I0306 16:51:21.120553 20805 net.cpp:165] Memory required for data: 136875360
+I0306 16:51:21.120573 20805 layer_factory.hpp:77] Creating layer drop7
+I0306 16:51:21.120602 20805 net.cpp:106] Creating Layer drop7
+I0306 16:51:21.120626 20805 net.cpp:454] drop7 <- fc7
+I0306 16:51:21.120651 20805 net.cpp:397] drop7 -> fc7 (in-place)
+I0306 16:51:21.120697 20805 net.cpp:150] Setting up drop7
+I0306 16:51:21.120729 20805 net.cpp:157] Top shape: 20 4096 (81920)
+I0306 16:51:21.120753 20805 net.cpp:165] Memory required for data: 137203040
+I0306 16:51:21.120774 20805 layer_factory.hpp:77] Creating layer fc8_subset
+I0306 16:51:21.120801 20805 net.cpp:106] Creating Layer fc8_subset
+I0306 16:51:21.120825 20805 net.cpp:454] fc8_subset <- fc7
+I0306 16:51:21.120851 20805 net.cpp:411] fc8_subset -> fc8_subset
+I0306 16:51:21.124569 20805 net.cpp:150] Setting up fc8_subset
+I0306 16:51:21.124603 20805 net.cpp:157] Top shape: 20 25 (500)
+I0306 16:51:21.124625 20805 net.cpp:165] Memory required for data: 137205040
+I0306 16:51:21.124650 20805 layer_factory.hpp:77] Creating layer fc8_subset_fc8_subset_0_split
+I0306 16:51:21.124676 20805 net.cpp:106] Creating Layer fc8_subset_fc8_subset_0_split
+I0306 16:51:21.124783 20805 net.cpp:454] fc8_subset_fc8_subset_0_split <- fc8_subset
+I0306 16:51:21.124811 20805 net.cpp:411] fc8_subset_fc8_subset_0_split -> fc8_subset_fc8_subset_0_split_0
+I0306 16:51:21.124842 20805 net.cpp:411] fc8_subset_fc8_subset_0_split -> fc8_subset_fc8_subset_0_split_1
+I0306 16:51:21.124900 20805 net.cpp:150] Setting up fc8_subset_fc8_subset_0_split
+I0306 16:51:21.124932 20805 net.cpp:157] Top shape: 20 25 (500)
+I0306 16:51:21.124955 20805 net.cpp:157] Top shape: 20 25 (500)
+I0306 16:51:21.124977 20805 net.cpp:165] Memory required for data: 137209040
+I0306 16:51:21.125000 20805 layer_factory.hpp:77] Creating layer loss
+I0306 16:51:21.125027 20805 net.cpp:106] Creating Layer loss
+I0306 16:51:21.125062 20805 net.cpp:454] loss <- fc8_subset_fc8_subset_0_split_0
+I0306 16:51:21.125087 20805 net.cpp:454] loss <- label_data_1_split_0
+I0306 16:51:21.125110 20805 net.cpp:411] loss -> loss
+I0306 16:51:21.125139 20805 layer_factory.hpp:77] Creating layer loss
+I0306 16:51:21.125232 20805 net.cpp:150] Setting up loss
+I0306 16:51:21.125263 20805 net.cpp:157] Top shape: (1)
+I0306 16:51:21.125285 20805 net.cpp:160]     with loss weight 1
+I0306 16:51:21.125320 20805 net.cpp:165] Memory required for data: 137209044
+I0306 16:51:21.125342 20805 layer_factory.hpp:77] Creating layer accuracy
+I0306 16:51:21.125370 20805 net.cpp:106] Creating Layer accuracy
+I0306 16:51:21.125392 20805 net.cpp:454] accuracy <- fc8_subset_fc8_subset_0_split_1
+I0306 16:51:21.125416 20805 net.cpp:454] accuracy <- label_data_1_split_1
+I0306 16:51:21.125443 20805 net.cpp:411] accuracy -> accuracy
+I0306 16:51:21.125524 20805 net.cpp:150] Setting up accuracy
+I0306 16:51:21.125551 20805 net.cpp:157] Top shape: (1)
+I0306 16:51:21.125573 20805 net.cpp:165] Memory required for data: 137209048
+I0306 16:51:21.125596 20805 net.cpp:228] accuracy does not need backward computation.
+I0306 16:51:21.125617 20805 net.cpp:226] loss needs backward computation.
+I0306 16:51:21.125640 20805 net.cpp:226] fc8_subset_fc8_subset_0_split needs backward computation.
+I0306 16:51:21.125661 20805 net.cpp:226] fc8_subset needs backward computation.
+I0306 16:51:21.125684 20805 net.cpp:226] drop7 needs backward computation.
+I0306 16:51:21.125705 20805 net.cpp:226] relu7 needs backward computation.
+I0306 16:51:21.125725 20805 net.cpp:226] fc7 needs backward computation.
+I0306 16:51:21.125746 20805 net.cpp:226] drop6 needs backward computation.
+I0306 16:51:21.125767 20805 net.cpp:226] relu6 needs backward computation.
+I0306 16:51:21.125788 20805 net.cpp:226] fc6 needs backward computation.
+I0306 16:51:21.125810 20805 net.cpp:226] pool5 needs backward computation.
+I0306 16:51:21.125831 20805 net.cpp:226] relu5 needs backward computation.
+I0306 16:51:21.125854 20805 net.cpp:226] conv5 needs backward computation.
+I0306 16:51:21.125874 20805 net.cpp:226] relu4 needs backward computation.
+I0306 16:51:21.125895 20805 net.cpp:226] conv4 needs backward computation.
+I0306 16:51:21.125917 20805 net.cpp:226] relu3 needs backward computation.
+I0306 16:51:21.125938 20805 net.cpp:226] conv3 needs backward computation.
+I0306 16:51:21.125960 20805 net.cpp:226] norm2 needs backward computation.
+I0306 16:51:21.125982 20805 net.cpp:226] pool2 needs backward computation.
+I0306 16:51:21.126004 20805 net.cpp:226] relu2 needs backward computation.
+I0306 16:51:21.126025 20805 net.cpp:226] conv2 needs backward computation.
+I0306 16:51:21.126046 20805 net.cpp:226] norm1 needs backward computation.
+I0306 16:51:21.126068 20805 net.cpp:226] pool1 needs backward computation.
+I0306 16:51:21.126091 20805 net.cpp:226] relu1 needs backward computation.
+I0306 16:51:21.126111 20805 net.cpp:226] conv1 needs backward computation.
+I0306 16:51:21.126133 20805 net.cpp:228] label_data_1_split does not need backward computation.
+I0306 16:51:21.126155 20805 net.cpp:228] data does not need backward computation.
+I0306 16:51:21.126176 20805 net.cpp:270] This network produces output accuracy
+I0306 16:51:21.126199 20805 net.cpp:270] This network produces output loss
+I0306 16:51:21.126250 20805 net.cpp:283] Network initialization done.
+I0306 16:51:21.181740 20805 solver.cpp:60] Solver scaffolding done.
+I0306 16:51:21.182272 20805 caffe.cpp:129] Finetuning from /work/01932/dineshj/CS381V/caffe_install_scripts/caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel
+I0306 16:51:22.208093 20805 upgrade_proto.cpp:42] Attempting to upgrade input file specified using deprecated transformation parameters: /work/01932/dineshj/CS381V/caffe_install_scripts/caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel
+I0306 16:51:22.208168 20805 upgrade_proto.cpp:45] Successfully upgraded file specified using deprecated data transformation parameters.
+W0306 16:51:22.208207 20805 upgrade_proto.cpp:47] Note that future Caffe releases will only support transform_param messages for transformation fields.
+I0306 16:51:22.208390 20805 upgrade_proto.cpp:51] Attempting to upgrade input file specified using deprecated V1LayerParameter: /work/01932/dineshj/CS381V/caffe_install_scripts/caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel
+I0306 16:51:22.477870 20805 upgrade_proto.cpp:59] Successfully upgraded file specified using deprecated V1LayerParameter
+I0306 16:51:22.520174 20805 net.cpp:816] Ignoring source layer fc8
+I0306 16:51:23.283709 20805 upgrade_proto.cpp:42] Attempting to upgrade input file specified using deprecated transformation parameters: /work/01932/dineshj/CS381V/caffe_install_scripts/caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel
+I0306 16:51:23.283782 20805 upgrade_proto.cpp:45] Successfully upgraded file specified using deprecated data transformation parameters.
+W0306 16:51:23.283807 20805 upgrade_proto.cpp:47] Note that future Caffe releases will only support transform_param messages for transformation fields.
+I0306 16:51:23.283859 20805 upgrade_proto.cpp:51] Attempting to upgrade input file specified using deprecated V1LayerParameter: /work/01932/dineshj/CS381V/caffe_install_scripts/caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel
+I0306 16:51:23.552608 20805 upgrade_proto.cpp:59] Successfully upgraded file specified using deprecated V1LayerParameter
+I0306 16:51:23.594431 20805 net.cpp:816] Ignoring source layer fc8
+I0306 16:51:23.596199 20805 caffe.cpp:219] Starting Optimization
+I0306 16:51:23.596233 20805 solver.cpp:280] Solving FlickrStyleCaffeNet
+I0306 16:51:23.596256 20805 solver.cpp:281] Learning Rate Policy: step
+I0306 16:51:23.597820 20805 solver.cpp:338] Iteration 0, Testing net (#0)
+I0306 16:51:24.793591 20805 solver.cpp:406]     Test net output #0: accuracy = 0.022
+I0306 16:51:24.793761 20805 solver.cpp:406]     Test net output #1: loss = 3.76074 (* 1 = 3.76074 loss)
+I0306 16:51:25.414965 20805 solver.cpp:229] Iteration 0, loss = 4.12064
+I0306 16:51:25.415056 20805 solver.cpp:245]     Train net output #0: loss = 4.12064 (* 1 = 4.12064 loss)
+I0306 16:51:25.415117 20805 sgd_solver.cpp:106] Iteration 0, lr = 1e-05
+I0306 16:52:04.494827 20805 solver.cpp:229] Iteration 50, loss = 2.10996
+I0306 16:52:04.495069 20805 solver.cpp:245]     Train net output #0: loss = 2.10996 (* 1 = 2.10996 loss)
+I0306 16:52:04.495100 20805 sgd_solver.cpp:106] Iteration 50, lr = 1e-05
+I0306 16:52:43.608685 20805 solver.cpp:229] Iteration 100, loss = 1.42442
+I0306 16:52:43.609047 20805 solver.cpp:245]     Train net output #0: loss = 1.42442 (* 1 = 1.42442 loss)
+I0306 16:52:43.609086 20805 sgd_solver.cpp:106] Iteration 100, lr = 1e-05
+I0306 16:53:22.734016 20805 solver.cpp:229] Iteration 150, loss = 1.2702
+I0306 16:53:22.734357 20805 solver.cpp:245]     Train net output #0: loss = 1.2702 (* 1 = 1.2702 loss)
+I0306 16:53:22.734395 20805 sgd_solver.cpp:106] Iteration 150, lr = 1e-05
+I0306 16:54:01.853363 20805 solver.cpp:229] Iteration 200, loss = 1.02744
+I0306 16:54:01.853664 20805 solver.cpp:245]     Train net output #0: loss = 1.02744 (* 1 = 1.02744 loss)
+I0306 16:54:01.853703 20805 sgd_solver.cpp:106] Iteration 200, lr = 1e-05
+I0306 16:54:40.968293 20805 solver.cpp:229] Iteration 250, loss = 0.84702
+I0306 16:54:40.968684 20805 solver.cpp:245]     Train net output #0: loss = 0.84702 (* 1 = 0.84702 loss)
+I0306 16:54:40.968724 20805 sgd_solver.cpp:106] Iteration 250, lr = 1e-05
+I0306 16:55:19.303853 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_300.caffemodel
+I0306 16:55:21.057840 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_300.solverstate
+I0306 16:55:22.003345 20805 solver.cpp:338] Iteration 300, Testing net (#0)
+I0306 16:55:23.147198 20805 solver.cpp:406]     Test net output #0: accuracy = 0.872
+I0306 16:55:23.147349 20805 solver.cpp:406]     Test net output #1: loss = 0.7851 (* 1 = 0.7851 loss)
+I0306 16:55:23.752763 20805 solver.cpp:229] Iteration 300, loss = 0.790193
+I0306 16:55:23.752907 20805 solver.cpp:245]     Train net output #0: loss = 0.790193 (* 1 = 0.790193 loss)
+I0306 16:55:23.752939 20805 sgd_solver.cpp:106] Iteration 300, lr = 1e-05
+I0306 16:56:02.858675 20805 solver.cpp:229] Iteration 350, loss = 0.758035
+I0306 16:56:02.859027 20805 solver.cpp:245]     Train net output #0: loss = 0.758035 (* 1 = 0.758035 loss)
+I0306 16:56:02.859064 20805 sgd_solver.cpp:106] Iteration 350, lr = 1e-05
+I0306 16:56:41.967015 20805 solver.cpp:229] Iteration 400, loss = 0.70579
+I0306 16:56:41.967363 20805 solver.cpp:245]     Train net output #0: loss = 0.70579 (* 1 = 0.70579 loss)
+I0306 16:56:41.967401 20805 sgd_solver.cpp:106] Iteration 400, lr = 1e-05
+I0306 16:57:21.078625 20805 solver.cpp:229] Iteration 450, loss = 0.828091
+I0306 16:57:21.078999 20805 solver.cpp:245]     Train net output #0: loss = 0.828091 (* 1 = 0.828091 loss)
+I0306 16:57:21.079036 20805 sgd_solver.cpp:106] Iteration 450, lr = 1e-05
+I0306 16:58:00.187072 20805 solver.cpp:229] Iteration 500, loss = 0.579516
+I0306 16:58:00.187470 20805 solver.cpp:245]     Train net output #0: loss = 0.579516 (* 1 = 0.579516 loss)
+I0306 16:58:00.187507 20805 sgd_solver.cpp:106] Iteration 500, lr = 1e-05
+I0306 16:58:39.304808 20805 solver.cpp:229] Iteration 550, loss = 0.623886
+I0306 16:58:39.305197 20805 solver.cpp:245]     Train net output #0: loss = 0.623886 (* 1 = 0.623886 loss)
+I0306 16:58:39.305233 20805 sgd_solver.cpp:106] Iteration 550, lr = 1e-05
+I0306 16:59:17.638160 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_600.caffemodel
+I0306 16:59:19.308734 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_600.solverstate
+I0306 16:59:20.245865 20805 solver.cpp:338] Iteration 600, Testing net (#0)
+I0306 16:59:21.389423 20805 solver.cpp:406]     Test net output #0: accuracy = 0.886
+I0306 16:59:21.389585 20805 solver.cpp:406]     Test net output #1: loss = 0.667804 (* 1 = 0.667804 loss)
+I0306 16:59:21.992604 20805 solver.cpp:229] Iteration 600, loss = 0.829181
+I0306 16:59:21.992647 20805 solver.cpp:245]     Train net output #0: loss = 0.829181 (* 1 = 0.829181 loss)
+I0306 16:59:21.992677 20805 sgd_solver.cpp:106] Iteration 600, lr = 1e-05
+I0306 17:00:01.081858 20805 solver.cpp:229] Iteration 650, loss = 0.86374
+I0306 17:00:01.082085 20805 solver.cpp:245]     Train net output #0: loss = 0.86374 (* 1 = 0.86374 loss)
+I0306 17:00:01.082118 20805 sgd_solver.cpp:106] Iteration 650, lr = 1e-05
+I0306 17:00:40.186934 20805 solver.cpp:229] Iteration 700, loss = 0.77862
+I0306 17:00:40.187144 20805 solver.cpp:245]     Train net output #0: loss = 0.77862 (* 1 = 0.77862 loss)
+I0306 17:00:40.187178 20805 sgd_solver.cpp:106] Iteration 700, lr = 1e-05
+I0306 17:01:19.284915 20805 solver.cpp:229] Iteration 750, loss = 0.69278
+I0306 17:01:19.285130 20805 solver.cpp:245]     Train net output #0: loss = 0.69278 (* 1 = 0.69278 loss)
+I0306 17:01:19.285164 20805 sgd_solver.cpp:106] Iteration 750, lr = 1e-05
+I0306 17:01:58.379710 20805 solver.cpp:229] Iteration 800, loss = 0.679508
+I0306 17:01:58.379940 20805 solver.cpp:245]     Train net output #0: loss = 0.679508 (* 1 = 0.679508 loss)
+I0306 17:01:58.379987 20805 sgd_solver.cpp:106] Iteration 800, lr = 1e-05
+I0306 17:02:37.472651 20805 solver.cpp:229] Iteration 850, loss = 0.780449
+I0306 17:02:37.472865 20805 solver.cpp:245]     Train net output #0: loss = 0.780449 (* 1 = 0.780449 loss)
+I0306 17:02:37.472899 20805 sgd_solver.cpp:106] Iteration 850, lr = 1e-05
+I0306 17:03:15.799609 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_900.caffemodel
+I0306 17:03:17.466228 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_900.solverstate
+I0306 17:03:18.412570 20805 solver.cpp:338] Iteration 900, Testing net (#0)
+I0306 17:03:19.556426 20805 solver.cpp:406]     Test net output #0: accuracy = 0.908
+I0306 17:03:19.556577 20805 solver.cpp:406]     Test net output #1: loss = 0.638482 (* 1 = 0.638482 loss)
+I0306 17:03:20.160030 20805 solver.cpp:229] Iteration 900, loss = 0.741612
+I0306 17:03:20.160075 20805 solver.cpp:245]     Train net output #0: loss = 0.741612 (* 1 = 0.741612 loss)
+I0306 17:03:20.160106 20805 sgd_solver.cpp:106] Iteration 900, lr = 1e-05
+I0306 17:03:59.263216 20805 solver.cpp:229] Iteration 950, loss = 0.7254
+I0306 17:03:59.263461 20805 solver.cpp:245]     Train net output #0: loss = 0.7254 (* 1 = 0.7254 loss)
+I0306 17:03:59.263494 20805 sgd_solver.cpp:106] Iteration 950, lr = 1e-05
+I0306 17:04:38.363889 20805 solver.cpp:229] Iteration 1000, loss = 0.665208
+I0306 17:04:38.364104 20805 solver.cpp:245]     Train net output #0: loss = 0.665208 (* 1 = 0.665208 loss)
+I0306 17:04:38.364137 20805 sgd_solver.cpp:106] Iteration 1000, lr = 1e-05
+I0306 17:05:17.459141 20805 solver.cpp:229] Iteration 1050, loss = 0.722322
+I0306 17:05:17.459354 20805 solver.cpp:245]     Train net output #0: loss = 0.722322 (* 1 = 0.722322 loss)
+I0306 17:05:17.459388 20805 sgd_solver.cpp:106] Iteration 1050, lr = 1e-05
+I0306 17:05:56.564225 20805 solver.cpp:229] Iteration 1100, loss = 0.796923
+I0306 17:05:56.564437 20805 solver.cpp:245]     Train net output #0: loss = 0.796923 (* 1 = 0.796923 loss)
+I0306 17:05:56.564471 20805 sgd_solver.cpp:106] Iteration 1100, lr = 1e-05
+I0306 17:06:35.663383 20805 solver.cpp:229] Iteration 1150, loss = 0.996488
+I0306 17:06:35.663564 20805 solver.cpp:245]     Train net output #0: loss = 0.996488 (* 1 = 0.996488 loss)
+I0306 17:06:35.663599 20805 sgd_solver.cpp:106] Iteration 1150, lr = 1e-05
+I0306 17:07:13.993079 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_1200.caffemodel
+I0306 17:07:15.663053 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_1200.solverstate
+I0306 17:07:16.609424 20805 solver.cpp:338] Iteration 1200, Testing net (#0)
+I0306 17:07:17.753753 20805 solver.cpp:406]     Test net output #0: accuracy = 0.912
+I0306 17:07:17.753902 20805 solver.cpp:406]     Test net output #1: loss = 0.651824 (* 1 = 0.651824 loss)
+I0306 17:07:18.358366 20805 solver.cpp:229] Iteration 1200, loss = 0.770508
+I0306 17:07:18.358410 20805 solver.cpp:245]     Train net output #0: loss = 0.770508 (* 1 = 0.770508 loss)
+I0306 17:07:18.358441 20805 sgd_solver.cpp:106] Iteration 1200, lr = 1e-05
+I0306 17:07:57.468683 20805 solver.cpp:229] Iteration 1250, loss = 0.934495
+I0306 17:07:57.468922 20805 solver.cpp:245]     Train net output #0: loss = 0.934495 (* 1 = 0.934495 loss)
+I0306 17:07:57.468955 20805 sgd_solver.cpp:106] Iteration 1250, lr = 1e-05
+I0306 17:08:36.579771 20805 solver.cpp:229] Iteration 1300, loss = 0.726111
+I0306 17:08:36.579982 20805 solver.cpp:245]     Train net output #0: loss = 0.726111 (* 1 = 0.726111 loss)
+I0306 17:08:36.580016 20805 sgd_solver.cpp:106] Iteration 1300, lr = 1e-05
+I0306 17:09:15.679975 20805 solver.cpp:229] Iteration 1350, loss = 0.653194
+I0306 17:09:15.680171 20805 solver.cpp:245]     Train net output #0: loss = 0.653194 (* 1 = 0.653194 loss)
+I0306 17:09:15.680215 20805 sgd_solver.cpp:106] Iteration 1350, lr = 1e-05
+I0306 17:09:54.783376 20805 solver.cpp:229] Iteration 1400, loss = 0.694073
+I0306 17:09:54.783597 20805 solver.cpp:245]     Train net output #0: loss = 0.694073 (* 1 = 0.694073 loss)
+I0306 17:09:54.783632 20805 sgd_solver.cpp:106] Iteration 1400, lr = 1e-05
+I0306 17:10:33.878949 20805 solver.cpp:229] Iteration 1450, loss = 0.666866
+I0306 17:10:33.879160 20805 solver.cpp:245]     Train net output #0: loss = 0.666866 (* 1 = 0.666866 loss)
+I0306 17:10:33.879194 20805 sgd_solver.cpp:106] Iteration 1450, lr = 1e-05
+I0306 17:11:12.209475 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_1500.caffemodel
+I0306 17:11:13.871407 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_1500.solverstate
+I0306 17:11:14.806535 20805 solver.cpp:338] Iteration 1500, Testing net (#0)
+I0306 17:11:15.951347 20805 solver.cpp:406]     Test net output #0: accuracy = 0.896
+I0306 17:11:15.951500 20805 solver.cpp:406]     Test net output #1: loss = 0.662543 (* 1 = 0.662543 loss)
+I0306 17:11:16.556030 20805 solver.cpp:229] Iteration 1500, loss = 0.813428
+I0306 17:11:16.556074 20805 solver.cpp:245]     Train net output #0: loss = 0.813428 (* 1 = 0.813428 loss)
+I0306 17:11:16.556105 20805 sgd_solver.cpp:106] Iteration 1500, lr = 1e-05
+I0306 17:11:55.664001 20805 solver.cpp:229] Iteration 1550, loss = 0.815208
+I0306 17:11:55.664250 20805 solver.cpp:245]     Train net output #0: loss = 0.815208 (* 1 = 0.815208 loss)
+I0306 17:11:55.664283 20805 sgd_solver.cpp:106] Iteration 1550, lr = 1e-05
+I0306 17:12:34.773156 20805 solver.cpp:229] Iteration 1600, loss = 0.552383
+I0306 17:12:34.773365 20805 solver.cpp:245]     Train net output #0: loss = 0.552383 (* 1 = 0.552383 loss)
+I0306 17:12:34.773398 20805 sgd_solver.cpp:106] Iteration 1600, lr = 1e-05
+I0306 17:13:13.879343 20805 solver.cpp:229] Iteration 1650, loss = 0.655366
+I0306 17:13:13.879554 20805 solver.cpp:245]     Train net output #0: loss = 0.655366 (* 1 = 0.655366 loss)
+I0306 17:13:13.879588 20805 sgd_solver.cpp:106] Iteration 1650, lr = 1e-05
+I0306 17:13:52.984855 20805 solver.cpp:229] Iteration 1700, loss = 0.628491
+I0306 17:13:52.985045 20805 solver.cpp:245]     Train net output #0: loss = 0.628491 (* 1 = 0.628491 loss)
+I0306 17:13:52.985080 20805 sgd_solver.cpp:106] Iteration 1700, lr = 1e-05
+I0306 17:14:32.092706 20805 solver.cpp:229] Iteration 1750, loss = 0.657959
+I0306 17:14:32.092912 20805 solver.cpp:245]     Train net output #0: loss = 0.657959 (* 1 = 0.657959 loss)
+I0306 17:14:32.092946 20805 sgd_solver.cpp:106] Iteration 1750, lr = 1e-05
+I0306 17:15:10.428453 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_1800.caffemodel
+I0306 17:15:12.097990 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_1800.solverstate
+I0306 17:15:13.040204 20805 solver.cpp:338] Iteration 1800, Testing net (#0)
+I0306 17:15:14.184723 20805 solver.cpp:406]     Test net output #0: accuracy = 0.894
+I0306 17:15:14.184878 20805 solver.cpp:406]     Test net output #1: loss = 0.686773 (* 1 = 0.686773 loss)
+I0306 17:15:14.789194 20805 solver.cpp:229] Iteration 1800, loss = 1.10048
+I0306 17:15:14.789240 20805 solver.cpp:245]     Train net output #0: loss = 1.10048 (* 1 = 1.10048 loss)
+I0306 17:15:14.789271 20805 sgd_solver.cpp:106] Iteration 1800, lr = 1e-05
+I0306 17:15:53.900661 20805 solver.cpp:229] Iteration 1850, loss = 1.06042
+I0306 17:15:53.900913 20805 solver.cpp:245]     Train net output #0: loss = 1.06042 (* 1 = 1.06042 loss)
+I0306 17:15:53.900948 20805 sgd_solver.cpp:106] Iteration 1850, lr = 1e-05
+I0306 17:16:33.006561 20805 solver.cpp:229] Iteration 1900, loss = 0.550621
+I0306 17:16:33.006953 20805 solver.cpp:245]     Train net output #0: loss = 0.550621 (* 1 = 0.550621 loss)
+I0306 17:16:33.006986 20805 sgd_solver.cpp:106] Iteration 1900, lr = 1e-05
+I0306 17:17:12.113596 20805 solver.cpp:229] Iteration 1950, loss = 0.539305
+I0306 17:17:12.113814 20805 solver.cpp:245]     Train net output #0: loss = 0.539305 (* 1 = 0.539305 loss)
+I0306 17:17:12.113847 20805 sgd_solver.cpp:106] Iteration 1950, lr = 1e-05
+I0306 17:17:51.210856 20805 solver.cpp:229] Iteration 2000, loss = 0.989274
+I0306 17:17:51.211071 20805 solver.cpp:245]     Train net output #0: loss = 0.989274 (* 1 = 0.989274 loss)
+I0306 17:17:51.211104 20805 sgd_solver.cpp:106] Iteration 2000, lr = 1e-05
+I0306 17:18:30.318001 20805 solver.cpp:229] Iteration 2050, loss = 0.644652
+I0306 17:18:30.318217 20805 solver.cpp:245]     Train net output #0: loss = 0.644652 (* 1 = 0.644652 loss)
+I0306 17:18:30.318249 20805 sgd_solver.cpp:106] Iteration 2050, lr = 1e-05
+I0306 17:19:08.650570 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_2100.caffemodel
+I0306 17:19:10.315626 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_2100.solverstate
+I0306 17:19:11.257958 20805 solver.cpp:338] Iteration 2100, Testing net (#0)
+I0306 17:19:12.402791 20805 solver.cpp:406]     Test net output #0: accuracy = 0.898
+I0306 17:19:12.402941 20805 solver.cpp:406]     Test net output #1: loss = 0.700497 (* 1 = 0.700497 loss)
+I0306 17:19:13.007086 20805 solver.cpp:229] Iteration 2100, loss = 1.20829
+I0306 17:19:13.007129 20805 solver.cpp:245]     Train net output #0: loss = 1.20829 (* 1 = 1.20829 loss)
+I0306 17:19:13.007160 20805 sgd_solver.cpp:106] Iteration 2100, lr = 1e-05
+I0306 17:19:52.113965 20805 solver.cpp:229] Iteration 2150, loss = 0.891966
+I0306 17:19:52.114234 20805 solver.cpp:245]     Train net output #0: loss = 0.891966 (* 1 = 0.891966 loss)
+I0306 17:19:52.114267 20805 sgd_solver.cpp:106] Iteration 2150, lr = 1e-05
+I0306 17:20:31.222620 20805 solver.cpp:229] Iteration 2200, loss = 0.697329
+I0306 17:20:31.222834 20805 solver.cpp:245]     Train net output #0: loss = 0.697329 (* 1 = 0.697329 loss)
+I0306 17:20:31.222868 20805 sgd_solver.cpp:106] Iteration 2200, lr = 1e-05
+I0306 17:21:10.313585 20805 solver.cpp:229] Iteration 2250, loss = 0.865286
+I0306 17:21:10.313796 20805 solver.cpp:245]     Train net output #0: loss = 0.865286 (* 1 = 0.865286 loss)
+I0306 17:21:10.313829 20805 sgd_solver.cpp:106] Iteration 2250, lr = 1e-05
+I0306 17:21:49.412506 20805 solver.cpp:229] Iteration 2300, loss = 0.864266
+I0306 17:21:49.412720 20805 solver.cpp:245]     Train net output #0: loss = 0.864266 (* 1 = 0.864266 loss)
+I0306 17:21:49.412753 20805 sgd_solver.cpp:106] Iteration 2300, lr = 1e-05
+I0306 17:22:28.504032 20805 solver.cpp:229] Iteration 2350, loss = 0.741426
+I0306 17:22:28.504240 20805 solver.cpp:245]     Train net output #0: loss = 0.741426 (* 1 = 0.741426 loss)
+I0306 17:22:28.504272 20805 sgd_solver.cpp:106] Iteration 2350, lr = 1e-05
+I0306 17:23:06.840019 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_2400.caffemodel
+I0306 17:23:08.507874 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_2400.solverstate
+I0306 17:23:09.454488 20805 solver.cpp:338] Iteration 2400, Testing net (#0)
+I0306 17:23:10.598922 20805 solver.cpp:406]     Test net output #0: accuracy = 0.89
+I0306 17:23:10.599069 20805 solver.cpp:406]     Test net output #1: loss = 0.777775 (* 1 = 0.777775 loss)
+I0306 17:23:11.204131 20805 solver.cpp:229] Iteration 2400, loss = 0.955697
+I0306 17:23:11.204174 20805 solver.cpp:245]     Train net output #0: loss = 0.955697 (* 1 = 0.955697 loss)
+I0306 17:23:11.204205 20805 sgd_solver.cpp:106] Iteration 2400, lr = 1e-05
+I0306 17:23:50.309631 20805 solver.cpp:229] Iteration 2450, loss = 1.27281
+I0306 17:23:50.309902 20805 solver.cpp:245]     Train net output #0: loss = 1.27282 (* 1 = 1.27282 loss)
+I0306 17:23:50.309936 20805 sgd_solver.cpp:106] Iteration 2450, lr = 1e-05
+I0306 17:24:29.405037 20805 solver.cpp:229] Iteration 2500, loss = 1.08677
+I0306 17:24:29.405259 20805 solver.cpp:245]     Train net output #0: loss = 1.08677 (* 1 = 1.08677 loss)
+I0306 17:24:29.405293 20805 sgd_solver.cpp:106] Iteration 2500, lr = 1e-05
+I0306 17:25:08.510678 20805 solver.cpp:229] Iteration 2550, loss = 1.99854
+I0306 17:25:08.510888 20805 solver.cpp:245]     Train net output #0: loss = 1.99854 (* 1 = 1.99854 loss)
+I0306 17:25:08.510922 20805 sgd_solver.cpp:106] Iteration 2550, lr = 1e-05
+I0306 17:25:47.620607 20805 solver.cpp:229] Iteration 2600, loss = 1.70983
+I0306 17:25:47.620813 20805 solver.cpp:245]     Train net output #0: loss = 1.70983 (* 1 = 1.70983 loss)
+I0306 17:25:47.620846 20805 sgd_solver.cpp:106] Iteration 2600, lr = 1e-05
+I0306 17:26:26.725111 20805 solver.cpp:229] Iteration 2650, loss = 9.06994
+I0306 17:26:26.725320 20805 solver.cpp:245]     Train net output #0: loss = 9.06994 (* 1 = 9.06994 loss)
+I0306 17:26:26.725354 20805 sgd_solver.cpp:106] Iteration 2650, lr = 1e-05
+I0306 17:27:05.054153 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_2700.caffemodel
+I0306 17:27:06.713161 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_2700.solverstate
+I0306 17:27:07.648232 20805 solver.cpp:338] Iteration 2700, Testing net (#0)
+I0306 17:27:08.791720 20805 solver.cpp:406]     Test net output #0: accuracy = 0.216
+I0306 17:27:08.791874 20805 solver.cpp:406]     Test net output #1: loss = 11.5074 (* 1 = 11.5074 loss)
+I0306 17:27:09.396522 20805 solver.cpp:229] Iteration 2700, loss = 24.4453
+I0306 17:27:09.396570 20805 solver.cpp:245]     Train net output #0: loss = 24.4453 (* 1 = 24.4453 loss)
+I0306 17:27:09.396601 20805 sgd_solver.cpp:106] Iteration 2700, lr = 1e-05
+I0306 17:27:48.496247 20805 solver.cpp:229] Iteration 2750, loss = 5.17471
+I0306 17:27:48.496495 20805 solver.cpp:245]     Train net output #0: loss = 5.17471 (* 1 = 5.17471 loss)
+I0306 17:27:48.496528 20805 sgd_solver.cpp:106] Iteration 2750, lr = 1e-05
+I0306 17:28:27.582756 20805 solver.cpp:229] Iteration 2800, loss = 3.54996
+I0306 17:28:27.582948 20805 solver.cpp:245]     Train net output #0: loss = 3.54996 (* 1 = 3.54996 loss)
+I0306 17:28:27.582981 20805 sgd_solver.cpp:106] Iteration 2800, lr = 1e-05
+I0306 17:29:06.644573 20805 solver.cpp:229] Iteration 2850, loss = 3.36266
+I0306 17:29:06.644783 20805 solver.cpp:245]     Train net output #0: loss = 3.36266 (* 1 = 3.36266 loss)
+I0306 17:29:06.644816 20805 sgd_solver.cpp:106] Iteration 2850, lr = 1e-05
+I0306 17:29:45.706001 20805 solver.cpp:229] Iteration 2900, loss = 3.26779
+I0306 17:29:45.706192 20805 solver.cpp:245]     Train net output #0: loss = 3.26779 (* 1 = 3.26779 loss)
+I0306 17:29:45.706224 20805 sgd_solver.cpp:106] Iteration 2900, lr = 1e-05
+I0306 17:30:24.764127 20805 solver.cpp:229] Iteration 2950, loss = 3.29269
+I0306 17:30:24.764510 20805 solver.cpp:245]     Train net output #0: loss = 3.29269 (* 1 = 3.29269 loss)
+I0306 17:30:24.764552 20805 sgd_solver.cpp:106] Iteration 2950, lr = 1e-05
+I0306 17:31:03.051795 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_3000.caffemodel
+I0306 17:31:04.727931 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_3000.solverstate
+I0306 17:31:05.674089 20805 solver.cpp:338] Iteration 3000, Testing net (#0)
+I0306 17:31:06.818835 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 17:31:06.818984 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 17:31:07.422785 20805 solver.cpp:229] Iteration 3000, loss = 3.26195
+I0306 17:31:07.422935 20805 solver.cpp:245]     Train net output #0: loss = 3.26195 (* 1 = 3.26195 loss)
+I0306 17:31:07.422966 20805 sgd_solver.cpp:106] Iteration 3000, lr = 1e-05
+I0306 17:31:46.479470 20805 solver.cpp:229] Iteration 3050, loss = 3.2787
+I0306 17:31:46.479807 20805 solver.cpp:245]     Train net output #0: loss = 3.2787 (* 1 = 3.2787 loss)
+I0306 17:31:46.479840 20805 sgd_solver.cpp:106] Iteration 3050, lr = 1e-05
+I0306 17:32:25.528194 20805 solver.cpp:229] Iteration 3100, loss = 3.27862
+I0306 17:32:25.529686 20805 solver.cpp:245]     Train net output #0: loss = 3.27862 (* 1 = 3.27862 loss)
+I0306 17:32:25.529716 20805 sgd_solver.cpp:106] Iteration 3100, lr = 1e-05
+I0306 17:33:04.568743 20805 solver.cpp:229] Iteration 3150, loss = 3.24879
+I0306 17:33:04.568956 20805 solver.cpp:245]     Train net output #0: loss = 3.24879 (* 1 = 3.24879 loss)
+I0306 17:33:04.568989 20805 sgd_solver.cpp:106] Iteration 3150, lr = 1e-05
+I0306 17:33:43.620443 20805 solver.cpp:229] Iteration 3200, loss = 3.21737
+I0306 17:33:43.620664 20805 solver.cpp:245]     Train net output #0: loss = 3.21737 (* 1 = 3.21737 loss)
+I0306 17:33:43.620697 20805 sgd_solver.cpp:106] Iteration 3200, lr = 1e-05
+I0306 17:34:22.677867 20805 solver.cpp:229] Iteration 3250, loss = 3.21781
+I0306 17:34:22.678082 20805 solver.cpp:245]     Train net output #0: loss = 3.21781 (* 1 = 3.21781 loss)
+I0306 17:34:22.678115 20805 sgd_solver.cpp:106] Iteration 3250, lr = 1e-05
+I0306 17:35:00.948950 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_3300.caffemodel
+I0306 17:35:02.607451 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_3300.solverstate
+I0306 17:35:03.552325 20805 solver.cpp:338] Iteration 3300, Testing net (#0)
+I0306 17:35:04.696593 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 17:35:04.696745 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 17:35:05.299660 20805 solver.cpp:229] Iteration 3300, loss = 3.21444
+I0306 17:35:05.299705 20805 solver.cpp:245]     Train net output #0: loss = 3.21444 (* 1 = 3.21444 loss)
+I0306 17:35:05.299737 20805 sgd_solver.cpp:106] Iteration 3300, lr = 1e-05
+I0306 17:35:44.349207 20805 solver.cpp:229] Iteration 3350, loss = 3.22026
+I0306 17:35:44.349457 20805 solver.cpp:245]     Train net output #0: loss = 3.22026 (* 1 = 3.22026 loss)
+I0306 17:35:44.349490 20805 sgd_solver.cpp:106] Iteration 3350, lr = 1e-05
+I0306 17:36:23.389029 20805 solver.cpp:229] Iteration 3400, loss = 3.19971
+I0306 17:36:23.389242 20805 solver.cpp:245]     Train net output #0: loss = 3.19971 (* 1 = 3.19971 loss)
+I0306 17:36:23.389276 20805 sgd_solver.cpp:106] Iteration 3400, lr = 1e-05
+I0306 17:37:02.424842 20805 solver.cpp:229] Iteration 3450, loss = 3.2979
+I0306 17:37:02.425015 20805 solver.cpp:245]     Train net output #0: loss = 3.2979 (* 1 = 3.2979 loss)
+I0306 17:37:02.425048 20805 sgd_solver.cpp:106] Iteration 3450, lr = 1e-05
+I0306 17:37:41.473886 20805 solver.cpp:229] Iteration 3500, loss = 3.35044
+I0306 17:37:41.474100 20805 solver.cpp:245]     Train net output #0: loss = 3.35044 (* 1 = 3.35044 loss)
+I0306 17:37:41.474134 20805 sgd_solver.cpp:106] Iteration 3500, lr = 1e-05
+I0306 17:38:20.520356 20805 solver.cpp:229] Iteration 3550, loss = 3.27887
+I0306 17:38:20.520570 20805 solver.cpp:245]     Train net output #0: loss = 3.27887 (* 1 = 3.27887 loss)
+I0306 17:38:20.520602 20805 sgd_solver.cpp:106] Iteration 3550, lr = 1e-05
+I0306 17:38:58.787896 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_3600.caffemodel
+I0306 17:39:00.449993 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_3600.solverstate
+I0306 17:39:01.395612 20805 solver.cpp:338] Iteration 3600, Testing net (#0)
+I0306 17:39:02.540009 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 17:39:02.540151 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 17:39:03.144785 20805 solver.cpp:229] Iteration 3600, loss = 3.2896
+I0306 17:39:03.144829 20805 solver.cpp:245]     Train net output #0: loss = 3.2896 (* 1 = 3.2896 loss)
+I0306 17:39:03.144891 20805 sgd_solver.cpp:106] Iteration 3600, lr = 1e-05
+I0306 17:39:42.201402 20805 solver.cpp:229] Iteration 3650, loss = 3.21138
+I0306 17:39:42.201642 20805 solver.cpp:245]     Train net output #0: loss = 3.21138 (* 1 = 3.21138 loss)
+I0306 17:39:42.201674 20805 sgd_solver.cpp:106] Iteration 3650, lr = 1e-05
+I0306 17:40:21.254405 20805 solver.cpp:229] Iteration 3700, loss = 3.2309
+I0306 17:40:21.254606 20805 solver.cpp:245]     Train net output #0: loss = 3.2309 (* 1 = 3.2309 loss)
+I0306 17:40:21.254638 20805 sgd_solver.cpp:106] Iteration 3700, lr = 1e-05
+I0306 17:41:00.304695 20805 solver.cpp:229] Iteration 3750, loss = 3.21828
+I0306 17:41:00.304888 20805 solver.cpp:245]     Train net output #0: loss = 3.21828 (* 1 = 3.21828 loss)
+I0306 17:41:00.304922 20805 sgd_solver.cpp:106] Iteration 3750, lr = 1e-05
+I0306 17:41:39.356964 20805 solver.cpp:229] Iteration 3800, loss = 3.24261
+I0306 17:41:39.357175 20805 solver.cpp:245]     Train net output #0: loss = 3.24261 (* 1 = 3.24261 loss)
+I0306 17:41:39.357208 20805 sgd_solver.cpp:106] Iteration 3800, lr = 1e-05
+I0306 17:42:18.405478 20805 solver.cpp:229] Iteration 3850, loss = 3.26308
+I0306 17:42:18.405694 20805 solver.cpp:245]     Train net output #0: loss = 3.26308 (* 1 = 3.26308 loss)
+I0306 17:42:18.405726 20805 sgd_solver.cpp:106] Iteration 3850, lr = 1e-05
+I0306 17:42:56.678267 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_3900.caffemodel
+I0306 17:42:58.341800 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_3900.solverstate
+I0306 17:42:59.291605 20805 solver.cpp:338] Iteration 3900, Testing net (#0)
+I0306 17:43:00.436262 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 17:43:00.436410 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 17:43:01.040812 20805 solver.cpp:229] Iteration 3900, loss = 3.24833
+I0306 17:43:01.040856 20805 solver.cpp:245]     Train net output #0: loss = 3.24833 (* 1 = 3.24833 loss)
+I0306 17:43:01.040887 20805 sgd_solver.cpp:106] Iteration 3900, lr = 1e-05
+I0306 17:43:40.090353 20805 solver.cpp:229] Iteration 3950, loss = 3.26276
+I0306 17:43:40.090610 20805 solver.cpp:245]     Train net output #0: loss = 3.26276 (* 1 = 3.26276 loss)
+I0306 17:43:40.090642 20805 sgd_solver.cpp:106] Iteration 3950, lr = 1e-05
+I0306 17:44:19.143712 20805 solver.cpp:229] Iteration 4000, loss = 3.23845
+I0306 17:44:19.143921 20805 solver.cpp:245]     Train net output #0: loss = 3.23845 (* 1 = 3.23845 loss)
+I0306 17:44:19.143954 20805 sgd_solver.cpp:106] Iteration 4000, lr = 1e-05
+I0306 17:44:58.193744 20805 solver.cpp:229] Iteration 4050, loss = 3.22082
+I0306 17:44:58.193960 20805 solver.cpp:245]     Train net output #0: loss = 3.22082 (* 1 = 3.22082 loss)
+I0306 17:44:58.193994 20805 sgd_solver.cpp:106] Iteration 4050, lr = 1e-05
+I0306 17:45:37.244362 20805 solver.cpp:229] Iteration 4100, loss = 3.26949
+I0306 17:45:37.244580 20805 solver.cpp:245]     Train net output #0: loss = 3.26949 (* 1 = 3.26949 loss)
+I0306 17:45:37.244614 20805 sgd_solver.cpp:106] Iteration 4100, lr = 1e-05
+I0306 17:46:16.292623 20805 solver.cpp:229] Iteration 4150, loss = 3.29063
+I0306 17:46:16.292837 20805 solver.cpp:245]     Train net output #0: loss = 3.29063 (* 1 = 3.29063 loss)
+I0306 17:46:16.292870 20805 sgd_solver.cpp:106] Iteration 4150, lr = 1e-05
+I0306 17:46:54.557016 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_4200.caffemodel
+I0306 17:46:56.232538 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_4200.solverstate
+I0306 17:46:57.173190 20805 solver.cpp:338] Iteration 4200, Testing net (#0)
+I0306 17:46:58.317787 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 17:46:58.317936 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 17:46:58.920106 20805 solver.cpp:229] Iteration 4200, loss = 3.22867
+I0306 17:46:58.920150 20805 solver.cpp:245]     Train net output #0: loss = 3.22867 (* 1 = 3.22867 loss)
+I0306 17:46:58.920181 20805 sgd_solver.cpp:106] Iteration 4200, lr = 1e-05
+I0306 17:47:37.965631 20805 solver.cpp:229] Iteration 4250, loss = 3.26642
+I0306 17:47:37.965888 20805 solver.cpp:245]     Train net output #0: loss = 3.26642 (* 1 = 3.26642 loss)
+I0306 17:47:37.965921 20805 sgd_solver.cpp:106] Iteration 4250, lr = 1e-05
+I0306 17:48:17.004006 20805 solver.cpp:229] Iteration 4300, loss = 3.3055
+I0306 17:48:17.004227 20805 solver.cpp:245]     Train net output #0: loss = 3.3055 (* 1 = 3.3055 loss)
+I0306 17:48:17.004261 20805 sgd_solver.cpp:106] Iteration 4300, lr = 1e-05
+I0306 17:48:56.053428 20805 solver.cpp:229] Iteration 4350, loss = 3.209
+I0306 17:48:56.053643 20805 solver.cpp:245]     Train net output #0: loss = 3.209 (* 1 = 3.209 loss)
+I0306 17:48:56.053676 20805 sgd_solver.cpp:106] Iteration 4350, lr = 1e-05
+I0306 17:49:35.101089 20805 solver.cpp:229] Iteration 4400, loss = 3.22251
+I0306 17:49:35.101295 20805 solver.cpp:245]     Train net output #0: loss = 3.22251 (* 1 = 3.22251 loss)
+I0306 17:49:35.101328 20805 sgd_solver.cpp:106] Iteration 4400, lr = 1e-05
+I0306 17:50:14.143709 20805 solver.cpp:229] Iteration 4450, loss = 3.25811
+I0306 17:50:14.143925 20805 solver.cpp:245]     Train net output #0: loss = 3.25811 (* 1 = 3.25811 loss)
+I0306 17:50:14.143959 20805 sgd_solver.cpp:106] Iteration 4450, lr = 1e-05
+I0306 17:50:52.423882 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_4500.caffemodel
+I0306 17:50:54.086567 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_4500.solverstate
+I0306 17:50:55.029204 20805 solver.cpp:338] Iteration 4500, Testing net (#0)
+I0306 17:50:56.173338 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 17:50:56.173496 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 17:50:56.777204 20805 solver.cpp:229] Iteration 4500, loss = 3.21654
+I0306 17:50:56.777252 20805 solver.cpp:245]     Train net output #0: loss = 3.21654 (* 1 = 3.21654 loss)
+I0306 17:50:56.777287 20805 sgd_solver.cpp:106] Iteration 4500, lr = 1e-05
+I0306 17:51:35.823652 20805 solver.cpp:229] Iteration 4550, loss = 3.23758
+I0306 17:51:35.823875 20805 solver.cpp:245]     Train net output #0: loss = 3.23758 (* 1 = 3.23758 loss)
+I0306 17:51:35.823909 20805 sgd_solver.cpp:106] Iteration 4550, lr = 1e-05
+I0306 17:52:14.876785 20805 solver.cpp:229] Iteration 4600, loss = 3.23029
+I0306 17:52:14.876991 20805 solver.cpp:245]     Train net output #0: loss = 3.23029 (* 1 = 3.23029 loss)
+I0306 17:52:14.877024 20805 sgd_solver.cpp:106] Iteration 4600, lr = 1e-05
+I0306 17:52:53.918963 20805 solver.cpp:229] Iteration 4650, loss = 3.23002
+I0306 17:52:53.919173 20805 solver.cpp:245]     Train net output #0: loss = 3.23002 (* 1 = 3.23002 loss)
+I0306 17:52:53.919205 20805 sgd_solver.cpp:106] Iteration 4650, lr = 1e-05
+I0306 17:53:32.964664 20805 solver.cpp:229] Iteration 4700, loss = 3.23373
+I0306 17:53:32.964872 20805 solver.cpp:245]     Train net output #0: loss = 3.23373 (* 1 = 3.23373 loss)
+I0306 17:53:32.964905 20805 sgd_solver.cpp:106] Iteration 4700, lr = 1e-05
+I0306 17:54:12.018291 20805 solver.cpp:229] Iteration 4750, loss = 3.22504
+I0306 17:54:12.018501 20805 solver.cpp:245]     Train net output #0: loss = 3.22504 (* 1 = 3.22504 loss)
+I0306 17:54:12.018534 20805 sgd_solver.cpp:106] Iteration 4750, lr = 1e-05
+I0306 17:54:50.283283 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_4800.caffemodel
+I0306 17:54:51.947470 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_4800.solverstate
+I0306 17:54:52.889843 20805 solver.cpp:338] Iteration 4800, Testing net (#0)
+I0306 17:54:54.033922 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 17:54:54.034073 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 17:54:54.636461 20805 solver.cpp:229] Iteration 4800, loss = 3.23291
+I0306 17:54:54.636504 20805 solver.cpp:245]     Train net output #0: loss = 3.23291 (* 1 = 3.23291 loss)
+I0306 17:54:54.636535 20805 sgd_solver.cpp:106] Iteration 4800, lr = 1e-05
+I0306 17:55:33.677425 20805 solver.cpp:229] Iteration 4850, loss = 3.2188
+I0306 17:55:33.677696 20805 solver.cpp:245]     Train net output #0: loss = 3.2188 (* 1 = 3.2188 loss)
+I0306 17:55:33.677731 20805 sgd_solver.cpp:106] Iteration 4850, lr = 1e-05
+I0306 17:56:12.719969 20805 solver.cpp:229] Iteration 4900, loss = 3.18281
+I0306 17:56:12.720181 20805 solver.cpp:245]     Train net output #0: loss = 3.18281 (* 1 = 3.18281 loss)
+I0306 17:56:12.720214 20805 sgd_solver.cpp:106] Iteration 4900, lr = 1e-05
+I0306 17:56:51.755591 20805 solver.cpp:229] Iteration 4950, loss = 3.22666
+I0306 17:56:51.755800 20805 solver.cpp:245]     Train net output #0: loss = 3.22666 (* 1 = 3.22666 loss)
+I0306 17:56:51.755833 20805 sgd_solver.cpp:106] Iteration 4950, lr = 1e-05
+I0306 17:57:30.795708 20805 solver.cpp:229] Iteration 5000, loss = 3.21981
+I0306 17:57:30.795918 20805 solver.cpp:245]     Train net output #0: loss = 3.21981 (* 1 = 3.21981 loss)
+I0306 17:57:30.795950 20805 sgd_solver.cpp:106] Iteration 5000, lr = 1e-06
+I0306 17:58:09.844194 20805 solver.cpp:229] Iteration 5050, loss = 3.22496
+I0306 17:58:09.844403 20805 solver.cpp:245]     Train net output #0: loss = 3.22496 (* 1 = 3.22496 loss)
+I0306 17:58:09.844436 20805 sgd_solver.cpp:106] Iteration 5050, lr = 1e-06
+I0306 17:58:48.115084 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_5100.caffemodel
+I0306 17:58:49.784394 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_5100.solverstate
+I0306 17:58:50.728786 20805 solver.cpp:338] Iteration 5100, Testing net (#0)
+I0306 17:58:51.872035 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 17:58:51.872184 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 17:58:52.476387 20805 solver.cpp:229] Iteration 5100, loss = 3.22382
+I0306 17:58:52.476430 20805 solver.cpp:245]     Train net output #0: loss = 3.22382 (* 1 = 3.22382 loss)
+I0306 17:58:52.476460 20805 sgd_solver.cpp:106] Iteration 5100, lr = 1e-06
+I0306 17:59:31.526249 20805 solver.cpp:229] Iteration 5150, loss = 3.2201
+I0306 17:59:31.526496 20805 solver.cpp:245]     Train net output #0: loss = 3.2201 (* 1 = 3.2201 loss)
+I0306 17:59:31.526530 20805 sgd_solver.cpp:106] Iteration 5150, lr = 1e-06
+I0306 18:00:10.580200 20805 solver.cpp:229] Iteration 5200, loss = 3.23217
+I0306 18:00:10.580523 20805 solver.cpp:245]     Train net output #0: loss = 3.23217 (* 1 = 3.23217 loss)
+I0306 18:00:10.580562 20805 sgd_solver.cpp:106] Iteration 5200, lr = 1e-06
+I0306 18:00:49.627400 20805 solver.cpp:229] Iteration 5250, loss = 3.24934
+I0306 18:00:49.627610 20805 solver.cpp:245]     Train net output #0: loss = 3.24934 (* 1 = 3.24934 loss)
+I0306 18:00:49.627643 20805 sgd_solver.cpp:106] Iteration 5250, lr = 1e-06
+I0306 18:01:28.673784 20805 solver.cpp:229] Iteration 5300, loss = 3.23203
+I0306 18:01:28.673990 20805 solver.cpp:245]     Train net output #0: loss = 3.23203 (* 1 = 3.23203 loss)
+I0306 18:01:28.674022 20805 sgd_solver.cpp:106] Iteration 5300, lr = 1e-06
+I0306 18:02:07.724989 20805 solver.cpp:229] Iteration 5350, loss = 3.22492
+I0306 18:02:07.725196 20805 solver.cpp:245]     Train net output #0: loss = 3.22492 (* 1 = 3.22492 loss)
+I0306 18:02:07.725229 20805 sgd_solver.cpp:106] Iteration 5350, lr = 1e-06
+I0306 18:02:45.987468 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_5400.caffemodel
+I0306 18:02:47.649176 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_5400.solverstate
+I0306 18:02:48.588752 20805 solver.cpp:338] Iteration 5400, Testing net (#0)
+I0306 18:02:49.733090 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 18:02:49.733242 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 18:02:50.335782 20805 solver.cpp:229] Iteration 5400, loss = 3.22336
+I0306 18:02:50.335824 20805 solver.cpp:245]     Train net output #0: loss = 3.22336 (* 1 = 3.22336 loss)
+I0306 18:02:50.335855 20805 sgd_solver.cpp:106] Iteration 5400, lr = 1e-06
+I0306 18:03:29.380928 20805 solver.cpp:229] Iteration 5450, loss = 3.22593
+I0306 18:03:29.381183 20805 solver.cpp:245]     Train net output #0: loss = 3.22593 (* 1 = 3.22593 loss)
+I0306 18:03:29.381217 20805 sgd_solver.cpp:106] Iteration 5450, lr = 1e-06
+I0306 18:04:08.434576 20805 solver.cpp:229] Iteration 5500, loss = 3.21383
+I0306 18:04:08.434782 20805 solver.cpp:245]     Train net output #0: loss = 3.21383 (* 1 = 3.21383 loss)
+I0306 18:04:08.434814 20805 sgd_solver.cpp:106] Iteration 5500, lr = 1e-06
+I0306 18:04:47.477610 20805 solver.cpp:229] Iteration 5550, loss = 3.21902
+I0306 18:04:47.477823 20805 solver.cpp:245]     Train net output #0: loss = 3.21902 (* 1 = 3.21902 loss)
+I0306 18:04:47.477855 20805 sgd_solver.cpp:106] Iteration 5550, lr = 1e-06
+I0306 18:05:26.511425 20805 solver.cpp:229] Iteration 5600, loss = 3.21511
+I0306 18:05:26.511631 20805 solver.cpp:245]     Train net output #0: loss = 3.21511 (* 1 = 3.21511 loss)
+I0306 18:05:26.511663 20805 sgd_solver.cpp:106] Iteration 5600, lr = 1e-06
+I0306 18:06:05.558420 20805 solver.cpp:229] Iteration 5650, loss = 3.21568
+I0306 18:06:05.558629 20805 solver.cpp:245]     Train net output #0: loss = 3.21568 (* 1 = 3.21568 loss)
+I0306 18:06:05.558662 20805 sgd_solver.cpp:106] Iteration 5650, lr = 1e-06
+I0306 18:06:43.829771 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_5700.caffemodel
+I0306 18:06:45.491245 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_5700.solverstate
+I0306 18:06:46.446236 20805 solver.cpp:338] Iteration 5700, Testing net (#0)
+I0306 18:06:47.590050 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 18:06:47.590196 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 18:06:48.193976 20805 solver.cpp:229] Iteration 5700, loss = 3.23035
+I0306 18:06:48.194020 20805 solver.cpp:245]     Train net output #0: loss = 3.23035 (* 1 = 3.23035 loss)
+I0306 18:06:48.194052 20805 sgd_solver.cpp:106] Iteration 5700, lr = 1e-06
+I0306 18:07:27.234386 20805 solver.cpp:229] Iteration 5750, loss = 3.21975
+I0306 18:07:27.234637 20805 solver.cpp:245]     Train net output #0: loss = 3.21975 (* 1 = 3.21975 loss)
+I0306 18:07:27.234670 20805 sgd_solver.cpp:106] Iteration 5750, lr = 1e-06
+I0306 18:08:06.273234 20805 solver.cpp:229] Iteration 5800, loss = 3.21835
+I0306 18:08:06.273418 20805 solver.cpp:245]     Train net output #0: loss = 3.21835 (* 1 = 3.21835 loss)
+I0306 18:08:06.273452 20805 sgd_solver.cpp:106] Iteration 5800, lr = 1e-06
+I0306 18:08:45.321064 20805 solver.cpp:229] Iteration 5850, loss = 3.21971
+I0306 18:08:45.321249 20805 solver.cpp:245]     Train net output #0: loss = 3.21971 (* 1 = 3.21971 loss)
+I0306 18:08:45.321282 20805 sgd_solver.cpp:106] Iteration 5850, lr = 1e-06
+I0306 18:09:24.365808 20805 solver.cpp:229] Iteration 5900, loss = 3.26792
+I0306 18:09:24.366017 20805 solver.cpp:245]     Train net output #0: loss = 3.26792 (* 1 = 3.26792 loss)
+I0306 18:09:24.366051 20805 sgd_solver.cpp:106] Iteration 5900, lr = 1e-06
+I0306 18:10:03.405755 20805 solver.cpp:229] Iteration 5950, loss = 3.23053
+I0306 18:10:03.405962 20805 solver.cpp:245]     Train net output #0: loss = 3.23053 (* 1 = 3.23053 loss)
+I0306 18:10:03.405995 20805 sgd_solver.cpp:106] Iteration 5950, lr = 1e-06
+I0306 18:10:41.677235 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_6000.caffemodel
+I0306 18:10:43.347466 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_6000.solverstate
+I0306 18:10:44.298441 20805 solver.cpp:338] Iteration 6000, Testing net (#0)
+I0306 18:10:45.442313 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 18:10:45.442459 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 18:10:46.045594 20805 solver.cpp:229] Iteration 6000, loss = 3.23281
+I0306 18:10:46.045639 20805 solver.cpp:245]     Train net output #0: loss = 3.23281 (* 1 = 3.23281 loss)
+I0306 18:10:46.045671 20805 sgd_solver.cpp:106] Iteration 6000, lr = 1e-06
+I0306 18:11:25.086626 20805 solver.cpp:229] Iteration 6050, loss = 3.2271
+I0306 18:11:25.086890 20805 solver.cpp:245]     Train net output #0: loss = 3.2271 (* 1 = 3.2271 loss)
+I0306 18:11:25.086925 20805 sgd_solver.cpp:106] Iteration 6050, lr = 1e-06
+I0306 18:12:04.127629 20805 solver.cpp:229] Iteration 6100, loss = 3.19888
+I0306 18:12:04.127846 20805 solver.cpp:245]     Train net output #0: loss = 3.19888 (* 1 = 3.19888 loss)
+I0306 18:12:04.127881 20805 sgd_solver.cpp:106] Iteration 6100, lr = 1e-06
+I0306 18:12:43.167047 20805 solver.cpp:229] Iteration 6150, loss = 3.21021
+I0306 18:12:43.167260 20805 solver.cpp:245]     Train net output #0: loss = 3.21021 (* 1 = 3.21021 loss)
+I0306 18:12:43.167294 20805 sgd_solver.cpp:106] Iteration 6150, lr = 1e-06
+I0306 18:13:22.210368 20805 solver.cpp:229] Iteration 6200, loss = 3.24435
+I0306 18:13:22.210559 20805 solver.cpp:245]     Train net output #0: loss = 3.24435 (* 1 = 3.24435 loss)
+I0306 18:13:22.210592 20805 sgd_solver.cpp:106] Iteration 6200, lr = 1e-06
+I0306 18:14:01.249191 20805 solver.cpp:229] Iteration 6250, loss = 3.23378
+I0306 18:14:01.249404 20805 solver.cpp:245]     Train net output #0: loss = 3.23378 (* 1 = 3.23378 loss)
+I0306 18:14:01.249439 20805 sgd_solver.cpp:106] Iteration 6250, lr = 1e-06
+I0306 18:14:39.516978 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_6300.caffemodel
+I0306 18:14:41.181248 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_6300.solverstate
+I0306 18:14:42.131300 20805 solver.cpp:338] Iteration 6300, Testing net (#0)
+I0306 18:14:43.275213 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 18:14:43.275362 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 18:14:43.879689 20805 solver.cpp:229] Iteration 6300, loss = 3.23095
+I0306 18:14:43.879732 20805 solver.cpp:245]     Train net output #0: loss = 3.23095 (* 1 = 3.23095 loss)
+I0306 18:14:43.879762 20805 sgd_solver.cpp:106] Iteration 6300, lr = 1e-06
+I0306 18:15:22.936009 20805 solver.cpp:229] Iteration 6350, loss = 3.2323
+I0306 18:15:22.936249 20805 solver.cpp:245]     Train net output #0: loss = 3.2323 (* 1 = 3.2323 loss)
+I0306 18:15:22.936281 20805 sgd_solver.cpp:106] Iteration 6350, lr = 1e-06
+I0306 18:16:01.974836 20805 solver.cpp:229] Iteration 6400, loss = 3.24148
+I0306 18:16:01.975049 20805 solver.cpp:245]     Train net output #0: loss = 3.24148 (* 1 = 3.24148 loss)
+I0306 18:16:01.975082 20805 sgd_solver.cpp:106] Iteration 6400, lr = 1e-06
+I0306 18:16:41.015995 20805 solver.cpp:229] Iteration 6450, loss = 3.21774
+I0306 18:16:41.016209 20805 solver.cpp:245]     Train net output #0: loss = 3.21774 (* 1 = 3.21774 loss)
+I0306 18:16:41.016243 20805 sgd_solver.cpp:106] Iteration 6450, lr = 1e-06
+I0306 18:17:20.058403 20805 solver.cpp:229] Iteration 6500, loss = 3.21966
+I0306 18:17:20.058619 20805 solver.cpp:245]     Train net output #0: loss = 3.21966 (* 1 = 3.21966 loss)
+I0306 18:17:20.058651 20805 sgd_solver.cpp:106] Iteration 6500, lr = 1e-06
+I0306 18:17:59.102965 20805 solver.cpp:229] Iteration 6550, loss = 3.2399
+I0306 18:17:59.105495 20805 solver.cpp:245]     Train net output #0: loss = 3.2399 (* 1 = 3.2399 loss)
+I0306 18:17:59.105528 20805 sgd_solver.cpp:106] Iteration 6550, lr = 1e-06
+I0306 18:18:37.362103 20805 solver.cpp:456] Snapshotting to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_6600.caffemodel
+I0306 18:18:39.045217 20805 sgd_solver.cpp:273] Snapshotting solver state to binary proto file /work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_6600.solverstate
+I0306 18:18:40.001853 20805 solver.cpp:338] Iteration 6600, Testing net (#0)
+I0306 18:18:41.146971 20805 solver.cpp:406]     Test net output #0: accuracy = 0.04
+I0306 18:18:41.147125 20805 solver.cpp:406]     Test net output #1: loss = 3.38712 (* 1 = 3.38712 loss)
+I0306 18:18:41.750749 20805 solver.cpp:229] Iteration 6600, loss = 3.24149
+I0306 18:18:41.750793 20805 solver.cpp:245]     Train net output #0: loss = 3.24149 (* 1 = 3.24149 loss)
+I0306 18:18:41.750824 20805 sgd_solver.cpp:106] Iteration 6600, lr = 1e-06
+I0306 18:19:20.790849 20805 solver.cpp:229] Iteration 6650, loss = 3.22518
+I0306 18:19:20.792421 20805 solver.cpp:245]     Train net output #0: loss = 3.22518 (* 1 = 3.22518 loss)
+I0306 18:19:20.792453 20805 sgd_solver.cpp:106] Iteration 6650, lr = 1e-06
+I0306 18:19:59.839514 20805 solver.cpp:229] Iteration 6700, loss = 3.21503
+I0306 18:19:59.839702 20805 solver.cpp:245]     Train net output #0: loss = 3.21503 (* 1 = 3.21503 loss)
+I0306 18:19:59.839735 20805 sgd_solver.cpp:106] Iteration 6700, lr = 1e-06
+I0306 18:20:38.899220 20805 solver.cpp:229] Iteration 6750, loss = 3.22582
+I0306 18:20:38.899400 20805 solver.cpp:245]     Train net output #0: loss = 3.22582 (* 1 = 3.22582 loss)
+I0306 18:20:38.899433 20805 sgd_solver.cpp:106] Iteration 6750, lr = 1e-06
+slurmstepd: *** JOB 443733 CANCELLED AT 2016-03-06T18:21:17 DUE TO TIME LIMIT on c221-702 ***
+*** Aborted at 1457310077 (unix time) try "date -d @1457310077" if you are using GNU date ***
+PC: @     0x2b307ea12f28 (unknown)
