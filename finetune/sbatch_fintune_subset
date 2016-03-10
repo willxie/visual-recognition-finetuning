@@ -11,7 +11,7 @@
 #SBATCH -n 1  
 #SBATCH -A CS381V-Visual-Recogn
 #SBATCH -p gpu
-#SBATCH -t 05:30:00        # run time (hh:mm:ss) - 
+#SBATCH -t 03:00:00        # run time (hh:mm:ss) - 
 #SBATCH -o finetune_subset_%j.out
 #SBATCH --mail-user=wxie@utexas.edu
 #SBATCH --mail-type=all    # email me when the job finishes

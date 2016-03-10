@@ -2,7 +2,7 @@ net: "/work/04018/wxie/maverick/visual_recognition/finetune/train_val_lmdb.proto
 test_iter: 25
 test_interval: 300
 # lr for fine-tuning should be lower than when starting from scratch
-base_lr: 0.000001
+base_lr: 0.0001
 lr_policy: "step"
 gamma: 0.1
 # stepsize should also be lower, as we're closer to being done
@@ -12,6 +12,6 @@ max_iter: 100000
 momentum: 0.9
 weight_decay: 0.0005
 snapshot: 500
-snapshot_prefix: "/work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb"
+snapshot_prefix: "/work/04018/wxie/maverick/visual_recognition/states/large_fast/finetune_lmdb"
 # uncomment the following to default to CPU mode solving
 # solver_mode: CPU

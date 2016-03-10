@@ -11,7 +11,7 @@ TRAIN="/work/04018/wxie/maverick/visual_recognition/finetune/test_train_lmdb.pro
 TEST="/work/04018/wxie/maverick/visual_recognition/finetune/test_test_lmdb.prototxt"
 EXTRA="/work/04018/wxie/maverick/visual_recognition/finetune/test_extra_lmdb.prototxt"
 COMBINED="/work/04018/wxie/maverick/visual_recognition/finetune/test_combined_lmdb.prototxt"
-WEIGHTS="/work/04018/wxie/maverick/visual_recognition/states/finetune_lmdb_iter_54000.caffemodel"
+WEIGHTS="/work/04018/wxie/maverick/visual_recognition/states/443916/finetune_lmdb_iter_54000.caffemodel"
 
 
     ${CAFFE_TOOL}/caffe test -model ${TRAIN} -weights ${WEIGHTS} -gpu all
