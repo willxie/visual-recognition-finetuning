@@ -1,4 +1,7 @@
-fid = fopen('filenames.txt', 'wt');
+load filenames.mat;
+whos;
+
+fid = fopen('class_name.txt', 'wt');
 strings = char(classnames);
 
 for class_idx = 1:length(strings(:, 1))
