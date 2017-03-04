@@ -1,2 +1,2 @@
-# visual_recognition
+# Visual Recognition Finetuning
 Image recognition using caffe finetuning
